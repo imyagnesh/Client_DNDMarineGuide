@@ -10,6 +10,10 @@ PODS:
     - React/Core (= 0.59.1)
   - react-native-maps (0.23.0):
     - React
+  - react-native-netinfo (1.3.0):
+    - React
+  - react-native-splash-screen (3.2.0):
+    - React
   - React/Core (0.59.1):
     - yoga (= 0.59.1.React)
   - React/CxxBridge (0.59.1):
@@ -72,6 +76,8 @@ DEPENDENCIES:
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - react-native-maps (from `../node_modules/react-native-maps`)
+  - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
+  - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
   - React/Core (from `../node_modules/react-native`)
   - React/CxxBridge (from `../node_modules/react-native`)
   - React/DevSupport (from `../node_modules/react-native`)
@@ -103,6 +109,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native"
   react-native-maps:
     :path: "../node_modules/react-native-maps"
+  react-native-netinfo:
+    :path: "../node_modules/@react-native-community/netinfo"
+  react-native-splash-screen:
+    :path: "../node_modules/react-native-splash-screen"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   yoga:
@@ -114,10 +124,12 @@ SPEC CHECKSUMS:
   Folly: de497beb10f102453a1afa9edbf8cf8a251890de
   glog: aefd1eb5dda2ab95ba0938556f34b98e2da3a60d
   React: 1d605e098d69bdf08960787f3446f0a9dc2e2ccf
-  react-native-maps: 066c2afcc89e18726377bcc685315f989ca22449
+  react-native-maps: bb480348a3fe1e5a811fed1ba3387b329161c5cc
+  react-native-netinfo: f4039dc64d3a55da59d6d03d4bd667d0a9f5450e
+  react-native-splash-screen: a49be22f0f6648b8416f3bd28258645eeaa5b42b
   RNGestureHandler: afde2addc517e85cc97a25bfe119acbee779a7ce
   yoga: 128daf064cacaede0c3bb27424b6b4c71052e6cd
 
-PODFILE CHECKSUM: 95acc097a72352a44de8c4fd8e67ceae5c0e912d
+PODFILE CHECKSUM: 623eb1d934bb749990f16f414ebb70a4d4fcbb49
 
 COCOAPODS: 1.5.3

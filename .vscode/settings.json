@@ -1,10 +1,24 @@
 {
-    "files.exclude": {
-        "**/.classpath": true,
-        "**/.project": true,
-        "**/.settings": true,
-        "**/.factorypath": true
-    },
-    "java.configuration.updateBuildConfiguration": "automatic",
-    "git.ignoreLimitWarning": true
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.factorypath": true,
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "node_modules": true
+  },
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "git.ignoreLimitWarning": true,
+  "[javascript]": { "editor.formatOnSave": true },
+  "javascript.validate.enable": false,
+  "javascript.format.enable": false,
+  "prettier.eslintIntegration": true,
+  "flow.useNPMPackagedFlow": true,
+  "telemetry.enableTelemetry": false,
+  "cSpell.words": [
+    "Unmount",
+    "netinfo"
+  ]
 }

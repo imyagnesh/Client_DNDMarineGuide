@@ -32,6 +32,10 @@ target 'DNDMarineGuide' do
 
   pod 'react-native-maps', :path => '../node_modules/react-native-maps'
 
+  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
+
+  pod 'react-native-netinfo', :path => '../node_modules/@react-native-community/netinfo'
+
 end
 
 post_install do |installer|
