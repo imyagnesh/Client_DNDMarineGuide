@@ -1,15 +1,16 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { View, FlatList, TextInput, StyleSheet } from 'react-native';
 import { RectButton, BorderlessButton } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-export default class index extends Component {
+export default class index extends PureComponent {
   static propTypes = {
     data: PropTypes.array.isRequired,
     renderItem: PropTypes.func.isRequired,
     searchKey: PropTypes.string.isRequired,
     uniqueKey: PropTypes.any.isRequired,
+    onSelectData: PropTypes.func.isRequired,
   };
 
   state = {
@@ -18,30 +19,43 @@ export default class index extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      data: nextProps.data,
-    });
+    if (JSON.stringify(nextProps.data) !== JSON.stringify(this.props.data)) {
+      this.setState({
+        data: nextProps.data,
+      });
+    }
   }
 
-  _selectItem = item => {
-    const { data } = this.state;
-    const { uniqueKey } = this.props;
+  selectItem = item => {
+    try {
+      const { data } = this.state;
+      const { uniqueKey } = this.props;
 
-    const i = data.findIndex(x => x[uniqueKey] === item[uniqueKey]);
+      const i = data.findIndex(x => x[uniqueKey] === item[uniqueKey]);
 
-    this.setState({
-      data: [
-        ...data.slice(0, i),
-        { ...data[i], selected: !data[i].selected },
-        ...data.slice(i + 1),
-      ],
-    });
+      this.setState(
+        {
+          data: [
+            ...data.slice(0, i),
+            { ...data[i], selected: !data[i].selected },
+            ...data.slice(i + 1),
+          ],
+        },
+        () => {
+          const { data: updatedData } = this.state;
+          const selected = updatedData.filter(x => x.selected && x.selected === true);
+          this.props.onSelectData(selected);
+        },
+      );
+    } catch (error) {
+      console.warn('error', error);
+    }
   };
 
-  _renderItem = ({ item }) => {
+  renderItem = ({ item }) => {
     const { uniqueKey } = this.props;
     return (
-      <RectButton key={`${item[uniqueKey]}`} onPress={() => this._selectItem(item)}>
+      <RectButton key={`${item[uniqueKey]}`} onPress={() => this.selectItem(item)}>
         <View style={{ flexDirection: 'row', padding: 10, alignItems: 'center' }}>
           <Icon
             name={item.selected ? 'check-box' : 'check-box-outline-blank'}
@@ -54,12 +68,12 @@ export default class index extends Component {
     );
   };
 
-  _keyExtractor = item => {
+  keyExtractor = item => {
     const { uniqueKey } = this.props;
     return `${item[uniqueKey]}`;
   };
 
-  _renderHeader = () => {
+  renderHeader = () => {
     const { search } = this.state;
     return (
       <View style={{ padding: 10 }}>
@@ -125,10 +139,9 @@ export default class index extends Component {
     return (
       <FlatList
         data={filteredCities}
-        extraData={search}
-        ListHeaderComponent={this._renderHeader}
-        renderItem={this._renderItem}
-        keyExtractor={this._keyExtractor}
+        ListHeaderComponent={this.renderHeader}
+        renderItem={this.renderItem}
+        keyExtractor={this.keyExtractor}
       />
     );
   }
