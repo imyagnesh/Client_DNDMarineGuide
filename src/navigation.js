@@ -4,43 +4,27 @@ import MainScreen from './screens/MainScreen';
 import DockScreen from './screens/DockScreen';
 import DineScreen from './screens/DineScreen';
 import ServicesScreen from './screens/ServicesScreen';
-
-const DockStack = createStackNavigator(
-  {
-    DockScreen,
-  },
-  {
-    initialRouteName: 'IntroPage',
-  },
-);
-
-const DineStack = createStackNavigator(
-  {
-    DineScreen,
-  },
-  {
-    initialRouteName: 'IntroPage',
-  },
-);
-
-const ServicesStack = createStackNavigator(
-  {
-    ServicesScreen,
-  },
-  {
-    initialRouteName: 'IntroPage',
-  },
-);
+import CitySearch from './screens/CitySearch';
+import MarinaScreen from './screens/MarinaScreen';
+import CategoriesScreen from './screens/CategoriesScreen';
+import NearByScreen from './screens/NearByScreen';
+import CityList from './screens/CityList';
 
 const AppStack = createStackNavigator(
   {
     Main: MainScreen,
-    Dock: DockStack,
-    Dine: DineStack,
-    Services: ServicesStack,
+    Dock: DockScreen,
+    Dine: DineScreen,
+    Services: ServicesScreen,
+    Marina: MarinaScreen,
+    Categories: CategoriesScreen,
+    NearBy: NearByScreen,
+    CityList,
+    CitySearch,
   },
   {
     initialRouteName: 'Main',
+    headerMode: 'screen',
   },
 );
 

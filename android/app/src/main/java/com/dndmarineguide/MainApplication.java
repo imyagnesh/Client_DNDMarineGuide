@@ -3,6 +3,7 @@ package com.dndmarineguide;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.oblador.vectoricons.VectorIconsPackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.airbnb.android.react.maps.MapsPackage;
@@ -27,6 +28,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new VectorIconsPackage(),
             new NetInfoPackage(),
             new SplashScreenReactPackage(),
             new MapsPackage(),

@@ -1,18 +1,40 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 import { View, Text } from 'react-native';
+import Button from '../../components/Button';
 
 export default class index extends Component {
   static propTypes = {
-    // prop: PropTypes
+    navigation: PropTypes.object.isRequired,
   };
 
   state = {};
 
   render() {
+    const {
+      navigation: { navigate },
+    } = this.props;
     return (
-      <View>
-        <Text>Services Screen</Text>
+      <View style={{ flex: 1, justifyContent: 'center' }}>
+        <Text
+          style={{
+            textAlign: 'center',
+          }}
+        >
+          Search By
+        </Text>
+        <Button
+          value="All Categories"
+          onPress={() => {
+            navigate('');
+          }}
+        />
+        <Button
+          value="Choose Specific"
+          onPress={() => {
+            navigate('Categories');
+          }}
+        />
       </View>
     );
   }
