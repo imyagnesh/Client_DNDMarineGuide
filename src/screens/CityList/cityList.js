@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text } from 'react-native';
+import { Text, ActivityIndicator } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import MultiSelect from '../../components/MultiSelect';
 
@@ -9,6 +9,7 @@ export default class index extends Component {
     fetchCities: PropTypes.func.isRequired,
     cities: PropTypes.array.isRequired,
     navigation: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired,
   };
 
   static navigationOptions = ({
@@ -54,17 +55,27 @@ export default class index extends Component {
   _onSelectData = data => {
     if (data && data.length > 0) {
       const {
-        navigation: { setParams, navigate },
+        navigation: {
+          setParams,
+          navigate,
+          state: { params },
+        },
       } = this.props;
 
+      const { search } = params;
+
       setParams({
-        onNextPress: () => navigate('CitySearch', { selectedCities: data.map(x => x.bus_city) }),
+        onNextPress: () =>
+          navigate('BusinessList', {
+            search: { ...search, cities: data.map(x => x.bus_city).toString() },
+          }),
       });
     }
   };
 
   render() {
     const { cities } = this.state;
+    const { loading } = this.props;
     return (
       <MultiSelect
         data={cities}
@@ -72,6 +83,7 @@ export default class index extends Component {
         onSelectData={this._onSelectData}
         uniqueKey="bus_city"
         searchKey="bus_city"
+        loading={loading}
       />
     );
   }

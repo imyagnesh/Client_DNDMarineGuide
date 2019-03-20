@@ -9,6 +9,7 @@ import MarinaScreen from './screens/MarinaScreen';
 import CategoriesScreen from './screens/CategoriesScreen';
 import NearByScreen from './screens/NearByScreen';
 import CityList from './screens/CityList';
+import BusinessList from './screens/BusinessList';
 
 const AppStack = createStackNavigator(
   {
@@ -21,6 +22,7 @@ const AppStack = createStackNavigator(
     NearBy: NearByScreen,
     CityList,
     CitySearch,
+    BusinessList,
   },
   {
     initialRouteName: 'Main',

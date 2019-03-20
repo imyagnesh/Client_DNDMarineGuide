@@ -2,7 +2,8 @@ import { all } from 'redux-saga/effects';
 import cities from './citiesSaga';
 import marinas from './marinasSaga';
 import categories from './categoriesSaga';
+import businesses from './businessesSaga';
 
 export default function* rootSaga() {
-  yield all([cities(), marinas(), categories()]);
+  yield all([cities(), marinas(), categories(), businesses()]);
 }

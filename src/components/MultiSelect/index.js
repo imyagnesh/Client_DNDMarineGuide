@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { View, FlatList, TextInput, StyleSheet } from 'react-native';
+import { View, FlatList, TextInput, StyleSheet, ActivityIndicator } from 'react-native';
 import { RectButton, BorderlessButton } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -11,6 +11,11 @@ export default class index extends PureComponent {
     searchKey: PropTypes.string.isRequired,
     uniqueKey: PropTypes.any.isRequired,
     onSelectData: PropTypes.func.isRequired,
+    loading: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    loading: false,
   };
 
   state = {
@@ -131,9 +136,27 @@ export default class index extends PureComponent {
     );
   };
 
+  _renderFooter = () => {
+    if (!this.props.loading) return null;
+
+    return (
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingVertical: 10,
+        }}
+      >
+        <ActivityIndicator animating size="large" />
+      </View>
+    );
+  };
+
   render() {
     const { data, search } = this.state;
-    const { searchKey } = this.props;
+    const { searchKey, loading } = this.props;
 
     const filteredCities = data.filter(x => x[searchKey].includes(search));
     return (
@@ -142,6 +165,8 @@ export default class index extends PureComponent {
         ListHeaderComponent={this.renderHeader}
         renderItem={this.renderItem}
         keyExtractor={this.keyExtractor}
+        ListFooterComponent={this._renderFooter}
+        refreshing={loading}
       />
     );
   }

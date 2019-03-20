@@ -19,13 +19,21 @@ export default class index extends Component {
         <Button
           value="Dock"
           onPress={() => {
-            navigate('Dock');
+            navigate('Dock', {
+              search: {
+                service: 'Dock',
+              },
+            });
           }}
         />
         <Button
           value="Dine"
           onPress={() => {
-            navigate('Dine');
+            navigate('Dine', {
+              search: {
+                service: 'Dine',
+              },
+            });
           }}
         />
         <Button

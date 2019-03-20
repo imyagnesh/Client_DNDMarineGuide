@@ -9,6 +9,7 @@ export default class index extends Component {
     fetchMarinas: PropTypes.func.isRequired,
     marinas: PropTypes.array.isRequired,
     navigation: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired,
   };
 
   static navigationOptions = ({
@@ -65,6 +66,7 @@ export default class index extends Component {
 
   render() {
     const { marinas } = this.state;
+    const { loading } = this.props;
     return (
       <MultiSelect
         data={marinas}
@@ -72,6 +74,7 @@ export default class index extends Component {
         onSelectData={this._onSelectData}
         uniqueKey="marina_cd"
         searchKey="mar_name"
+        loading={loading}
       />
     );
   }

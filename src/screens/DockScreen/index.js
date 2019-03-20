@@ -12,8 +12,12 @@ export default class index extends Component {
 
   render() {
     const {
-      navigation: { navigate },
+      navigation: {
+        navigate,
+        state: { params },
+      },
     } = this.props;
+    const { search } = params;
     return (
       <View style={{ flex: 1, justifyContent: 'center' }}>
         <Text
@@ -26,19 +30,19 @@ export default class index extends Component {
         <Button
           value="City"
           onPress={() => {
-            navigate('CitySearch', { searchType: 'Dock' });
+            navigate('CitySearch', { search });
           }}
         />
         <Button
           value="Marina"
           onPress={() => {
-            navigate('Marina', { searchType: 'Dock' });
+            navigate('Marina', { search });
           }}
         />
         <Button
           value="Business Category"
           onPress={() => {
-            navigate('Services', { searchType: 'Dock' });
+            navigate('Services', { search });
           }}
         />
       </View>

@@ -12,8 +12,12 @@ export default class index extends Component {
 
   render() {
     const {
-      navigation: { navigate },
+      navigation: {
+        navigate,
+        state: { params },
+      },
     } = this.props;
+    const { search } = params;
     return (
       <View style={{ flex: 1, justifyContent: 'center' }}>
         <Text
@@ -26,13 +30,13 @@ export default class index extends Component {
         <Button
           value="All"
           onPress={() => {
-            navigate('CityList');
+            navigate('CityList', { search });
           }}
         />
         <Button
           value="Near By"
           onPress={() => {
-            navigate('NearBy');
+            navigate('NearBy', { search });
           }}
         />
       </View>
