@@ -9,8 +9,13 @@ export default class index extends Component {
     navigation: PropTypes.object.isRequired,
     clearBusinesses: PropTypes.func.isRequired,
     fetchBusinesses: PropTypes.func.isRequired,
-    businesses: PropTypes.array.isRequired,
+    businesses: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
+  };
+
+  state = {
+    page: 1,
+    result: 20,
   };
 
   constructor(props) {
@@ -23,8 +28,9 @@ export default class index extends Component {
       fetchBusinesses,
     } = props;
     const { search } = params;
+    const { page, result } = this.state;
     clearBusinesses();
-    fetchBusinesses(search);
+    fetchBusinesses({ page, result, ...search });
   }
 
   _renderItem = ({ item }) => {
@@ -63,7 +69,29 @@ export default class index extends Component {
     );
   };
 
-  _loadMore = () => {};
+  _loadMore = () => {
+    const {
+      businesses: { businesses, recordsTotal },
+      navigation: {
+        state: { params },
+      },
+      fetchBusinesses,
+    } = this.props;
+
+    const { search } = params;
+
+    if (businesses.length < recordsTotal) {
+      this.setState(
+        state => {
+          return { page: state.page + 1 };
+        },
+        () => {
+          const { page, result } = this.state;
+          fetchBusinesses({ page, result, ...search });
+        },
+      );
+    }
+  };
 
   _itemSeparator = () => {
     return (
@@ -91,7 +119,7 @@ export default class index extends Component {
         ListFooterComponent={this._renderFooter}
         refreshing={loading}
         onEndReached={this._loadMore}
-        onEndReachedThreshold={100}
+        onEndReachedThreshold={0}
         ItemSeparatorComponent={this._itemSeparator}
       />
     );

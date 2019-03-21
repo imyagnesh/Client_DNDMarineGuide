@@ -7,6 +7,7 @@ function* getBusinesses({ payload }) {
     .map(key => `${key}=${payload[key]}`)
     .join('&');
   const url = `${apiUrl}/businesses?${queryString}`;
+  // console.warn('url', url);
   try {
     const res = yield call(Api, url, 'GET');
     yield put(action(`${types.FETCH_BUSINESSES}_${types.SUCCESS}`, res));

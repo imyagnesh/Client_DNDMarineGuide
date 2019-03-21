@@ -8,7 +8,10 @@ const initialState = {
 export default (state = initialState, { type, payload }) => {
   switch (type) {
     case `${types.FETCH_BUSINESSES}_${types.SUCCESS}`:
-      return { ...state, businesses: [...state.businesses, ...payload.businesses] };
+      return {
+        recordsTotal: payload.recordsTotal,
+        businesses: [...state.businesses, ...payload.businesses],
+      };
 
     case types.CLEAR_BUSINESSES:
       return initialState;
