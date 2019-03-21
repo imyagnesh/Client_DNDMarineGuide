@@ -12,7 +12,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchCities: () => dispatch(action(`${FETCH_CITIES}_${REQUEST}`)),
+    fetchCities: search => dispatch(action(`${FETCH_CITIES}_${REQUEST}`, search)),
   };
 }
 

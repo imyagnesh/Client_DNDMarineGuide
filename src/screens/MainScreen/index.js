@@ -1,48 +1,48 @@
-import React, { Component } from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
+
 import Button from '../../components/Button';
 
-export default class index extends Component {
-  static propTypes = {
-    navigation: PropTypes.object.isRequired,
-  };
+const index = ({ navigation: { navigate } }) => {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center' }}>
+      <Button
+        value="Dock"
+        onPress={() => {
+          navigate('Dock', {
+            search: {
+              service: 'Dock',
+            },
+          });
+        }}
+      />
+      <Button
+        value="Dine"
+        onPress={() => {
+          navigate('Dine', {
+            search: {
+              service: 'Dine',
+            },
+          });
+        }}
+      />
+      <Button
+        value="Services"
+        onPress={() => {
+          navigate('Categories', {
+            search: {
+              service: '',
+            },
+          });
+        }}
+      />
+    </View>
+  );
+};
 
-  state = {};
+index.propTypes = {
+  navigation: PropTypes.object.isRequired,
+};
 
-  render() {
-    const {
-      navigation: { navigate },
-    } = this.props;
-    return (
-      <View style={{ flex: 1, justifyContent: 'center' }}>
-        <Button
-          value="Dock"
-          onPress={() => {
-            navigate('Dock', {
-              search: {
-                service: 'Dock',
-              },
-            });
-          }}
-        />
-        <Button
-          value="Dine"
-          onPress={() => {
-            navigate('Dine', {
-              search: {
-                service: 'Dine',
-              },
-            });
-          }}
-        />
-        <Button
-          value="Services"
-          onPress={() => {
-            navigate('Services');
-          }}
-        />
-      </View>
-    );
-  }
-}
+export default memo(index);

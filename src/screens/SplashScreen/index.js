@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text } from 'react-native';
 
-export default class index extends Component {
+export default class index extends PureComponent {
   static propTypes = {
     navigation: PropTypes.object.isRequired,
   };

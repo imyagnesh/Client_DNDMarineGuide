@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { View, ActivityIndicator, FlatList, StyleSheet, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RectButton } from 'react-native-gesture-handler';
 
-export default class index extends Component {
+export default class index extends PureComponent {
   static propTypes = {
     navigation: PropTypes.object.isRequired,
     clearBusinesses: PropTypes.func.isRequired,

@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Text } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import MultiSelect from '../../components/MultiSelect';
 
-export default class index extends Component {
+export default class index extends PureComponent {
   static propTypes = {
     fetchMarinas: PropTypes.func.isRequired,
     marinas: PropTypes.array.isRequired,
@@ -39,7 +39,14 @@ export default class index extends Component {
 
   constructor(props) {
     super(props);
-    props.fetchMarinas();
+    const {
+      navigation: {
+        state: { params },
+      },
+      fetchMarinas,
+    } = props;
+    const { search } = params;
+    fetchMarinas(search);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -55,11 +62,20 @@ export default class index extends Component {
   _onSelectData = data => {
     if (data && data.length > 0) {
       const {
-        navigation: { setParams, navigate },
+        navigation: {
+          setParams,
+          navigate,
+          state: { params },
+        },
       } = this.props;
 
+      const { search } = params;
+
       setParams({
-        onNextPress: () => navigate('CitySearch', { selectedMarinas: data.map(x => x.marina_cd) }),
+        onNextPress: () =>
+          navigate('Categories', {
+            search: { ...search, marinas: data.map(x => x.marina_cd).toString() },
+          }),
       });
     }
   };

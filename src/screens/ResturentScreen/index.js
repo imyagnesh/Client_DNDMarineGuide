@@ -21,21 +21,15 @@ const index = ({
         Search By
       </Text>
       <Button
-        value="City"
+        value="All Categories"
         onPress={() => {
-          navigate('Cities', { search });
+          navigate('BusinessList', { search });
         }}
       />
       <Button
-        value="Marina"
+        value="Choose Specific"
         onPress={() => {
-          navigate('MarinaList', { search });
-        }}
-      />
-      <Button
-        value="Business Category"
-        onPress={() => {
-          navigate('Categories', { search });
+          navigate('BusinessList', { search });
         }}
       />
     </View>

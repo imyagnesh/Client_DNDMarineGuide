@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Text, ActivityIndicator } from 'react-native';
+import { Text } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import MultiSelect from '../../components/MultiSelect';
 
-export default class index extends Component {
+export default class index extends PureComponent {
   static propTypes = {
     fetchCities: PropTypes.func.isRequired,
     cities: PropTypes.array.isRequired,
@@ -39,7 +39,14 @@ export default class index extends Component {
 
   constructor(props) {
     super(props);
-    props.fetchCities();
+    const {
+      navigation: {
+        state: { params },
+      },
+      fetchCities,
+    } = props;
+    const { search } = params;
+    fetchCities(search);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -66,7 +73,7 @@ export default class index extends Component {
 
       setParams({
         onNextPress: () =>
-          navigate('BusinessList', {
+          navigate(search.service === 'Dine' ? 'BusinessList' : 'Categories', {
             search: { ...search, cities: data.map(x => x.bus_city).toString() },
           }),
       });

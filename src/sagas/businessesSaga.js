@@ -1,13 +1,12 @@
 import { call, put, takeEvery, all } from 'redux-saga/effects';
-import { Api, action, apiUrl } from 'utils';
+import { Api, action, apiUrl, edition } from 'utils';
 import * as types from '../constants/actionTypes';
 
 function* getBusinesses({ payload }) {
   const queryString = Object.keys(payload)
     .map(key => `${key}=${payload[key]}`)
     .join('&');
-  const url = `${apiUrl}/businesses?${queryString}`;
-  // console.warn('url', url);
+  const url = `${apiUrl}/businesses?edition=${edition}${queryString ? `&${queryString}` : ''}`;
   try {
     const res = yield call(Api, url, 'GET');
     yield put(action(`${types.FETCH_BUSINESSES}_${types.SUCCESS}`, res));

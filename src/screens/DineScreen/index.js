@@ -1,47 +1,49 @@
-import React, { Component } from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text } from 'react-native';
+
 import Button from '../../components/Button';
 
-export default class index extends Component {
-  static propTypes = {
-    navigation: PropTypes.object.isRequired,
-  };
+const index = ({
+  navigation: {
+    navigate,
+    state: { params },
+  },
+}) => {
+  const { search } = params;
+  return (
+    <View style={{ flex: 1, justifyContent: 'center' }}>
+      <Text
+        style={{
+          textAlign: 'center',
+        }}
+      >
+        Search By
+      </Text>
+      <Button
+        value="City"
+        onPress={() => {
+          navigate('Cities', { search });
+        }}
+      />
+      <Button
+        value="Marina"
+        onPress={() => {
+          navigate('MarinaList', { search });
+        }}
+      />
+      <Button
+        value="Near By"
+        onPress={() => {
+          navigate('NearBy', { search });
+        }}
+      />
+    </View>
+  );
+};
 
-  state = {};
+index.propTypes = {
+  navigation: PropTypes.object.isRequired,
+};
 
-  render() {
-    const {
-      navigation: { navigate },
-    } = this.props;
-    return (
-      <View style={{ flex: 1, justifyContent: 'center' }}>
-        <Text
-          style={{
-            textAlign: 'center',
-          }}
-        >
-          Search By
-        </Text>
-        <Button
-          value="City"
-          onPress={() => {
-            navigate('CitySearch', { searchType: 'Dine' });
-          }}
-        />
-        <Button
-          value="Marina"
-          onPress={() => {
-            navigate('Marina', { searchType: 'Dine' });
-          }}
-        />
-        <Button
-          value="Near By"
-          onPress={() => {
-            navigate('NearBy', { searchType: 'Dine' });
-          }}
-        />
-      </View>
-    );
-  }
-}
+export default memo(index);

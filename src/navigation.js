@@ -3,9 +3,9 @@ import SplashScreen from './screens/SplashScreen';
 import MainScreen from './screens/MainScreen';
 import DockScreen from './screens/DockScreen';
 import DineScreen from './screens/DineScreen';
-import ServicesScreen from './screens/ServicesScreen';
-import CitySearch from './screens/CitySearch';
-import MarinaScreen from './screens/MarinaScreen';
+import CategoryList from './screens/CategoryList';
+import CityScreen from './screens/CityScreen';
+import MarinaList from './screens/MarinaList';
 import CategoriesScreen from './screens/CategoriesScreen';
 import NearByScreen from './screens/NearByScreen';
 import CityList from './screens/CityList';
@@ -16,13 +16,13 @@ const AppStack = createStackNavigator(
     Main: MainScreen,
     Dock: DockScreen,
     Dine: DineScreen,
-    Services: ServicesScreen,
-    Marina: MarinaScreen,
     Categories: CategoriesScreen,
     NearBy: NearByScreen,
+    Cities: CityScreen,
     CityList,
-    CitySearch,
     BusinessList,
+    CategoryList,
+    MarinaList,
   },
   {
     initialRouteName: 'Main',

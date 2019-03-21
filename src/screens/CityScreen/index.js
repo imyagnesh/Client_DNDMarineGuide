@@ -1,7 +1,6 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text } from 'react-native';
-
 import Button from '../../components/Button';
 
 const index = ({
@@ -18,24 +17,18 @@ const index = ({
           textAlign: 'center',
         }}
       >
-        Search By
+        Search By City
       </Text>
       <Button
-        value="City"
+        value="All"
         onPress={() => {
-          navigate('Cities', { search });
+          navigate('CityList', { search });
         }}
       />
       <Button
-        value="Marina"
+        value="Near By"
         onPress={() => {
-          navigate('MarinaList', { search });
-        }}
-      />
-      <Button
-        value="Business Category"
-        onPress={() => {
-          navigate('Categories', { search });
+          navigate('NearBy', { search });
         }}
       />
     </View>
