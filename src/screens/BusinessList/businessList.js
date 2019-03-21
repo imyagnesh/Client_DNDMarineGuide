@@ -79,7 +79,10 @@ export default class index extends Component {
   };
 
   render() {
-    const { businesses, loading } = this.props;
+    const {
+      businesses: { businesses },
+      loading,
+    } = this.props;
     return (
       <FlatList
         data={businesses}
