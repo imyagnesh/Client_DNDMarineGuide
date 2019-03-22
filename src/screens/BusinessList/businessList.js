@@ -1,8 +1,17 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { View, ActivityIndicator, FlatList, StyleSheet, Text } from 'react-native';
+import { View, ActivityIndicator, FlatList, StyleSheet, Text, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RectButton } from 'react-native-gesture-handler';
+import MapView, { Marker, ProviderPropType, PROVIDER_GOOGLE } from 'react-native-maps';
+
+const { width, height } = Dimensions.get('window');
+
+const ASPECT_RATIO = width / height;
+const LATITUDE = 37.78825;
+const LONGITUDE = -122.4324;
+const LATITUDE_DELTA = 0.0922;
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 export default class index extends PureComponent {
   static propTypes = {
@@ -13,9 +22,38 @@ export default class index extends PureComponent {
     loading: PropTypes.bool.isRequired,
   };
 
+  static navigationOptions = ({
+    navigation: {
+      state: { params },
+      setParams,
+    },
+  }) => ({
+    headerTransparent: params && params.view === 'map',
+    headerRight: (
+      <RectButton
+        style={{ marginRight: 10 }}
+        onPress={() => {
+          if (params && params.view === 'map') {
+            setParams({ view: 'list' });
+          } else {
+            setParams({ view: 'map' });
+          }
+        }}
+      >
+        <Text style={{ padding: 8 }}>{params && params.view === 'map' ? 'List' : 'Map'}</Text>
+      </RectButton>
+    ),
+  });
+
   state = {
     page: 1,
     result: 20,
+    region: {
+      latitude: LATITUDE,
+      longitude: LONGITUDE,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA,
+    },
   };
 
   constructor(props) {
@@ -34,8 +72,11 @@ export default class index extends PureComponent {
   }
 
   _renderItem = ({ item }) => {
+    const {
+      navigation: { navigate },
+    } = this.props;
     return (
-      <RectButton onPress={() => {}}>
+      <RectButton onPress={() => navigate('BusinessDetails', { businessDetails: item })}>
         <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', padding: 10 }}>
           <View style={{ flex: 1 }}>
             <Text>{item.bus_name}</Text>
@@ -110,7 +151,27 @@ export default class index extends PureComponent {
     const {
       businesses: { businesses },
       loading,
+      navigation: {
+        state: { params },
+      },
     } = this.props;
+    if (params && params.view === 'map') {
+      return (
+        <MapView
+          style={{
+            ...StyleSheet.absoluteFillObject,
+          }}
+          initialRegion={this.state.region}
+          provider={PROVIDER_GOOGLE}
+        >
+          <Marker
+            title="This is a title"
+            description="This is a description"
+            coordinate={this.state.region}
+          />
+        </MapView>
+      );
+    }
     return (
       <FlatList
         data={businesses}

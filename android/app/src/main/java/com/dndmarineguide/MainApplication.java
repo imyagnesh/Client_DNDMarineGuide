@@ -3,6 +3,7 @@ package com.dndmarineguide;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
@@ -28,6 +29,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNFusedLocationPackage(),
             new VectorIconsPackage(),
             new NetInfoPackage(),
             new SplashScreenReactPackage(),

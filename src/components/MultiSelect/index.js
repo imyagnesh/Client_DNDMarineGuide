@@ -98,7 +98,6 @@ export default class index extends PureComponent {
           ref={ref => {
             this.searchInput = ref;
           }}
-          autoComplete="off"
           placeholder="Type Here..."
           underlineColorAndroid="transparent"
           style={{
@@ -161,6 +160,7 @@ export default class index extends PureComponent {
     const filteredCities = data.filter(x => x[searchKey].includes(search));
     return (
       <FlatList
+        style={{ flex: 1 }}
         data={filteredCities}
         ListHeaderComponent={this.renderHeader}
         renderItem={this.renderItem}

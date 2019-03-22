@@ -6,8 +6,33 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
+  - Google-Maps-iOS-Utils (2.1.0):
+    - Google-Maps-iOS-Utils/Clustering (= 2.1.0)
+    - Google-Maps-iOS-Utils/Geometry (= 2.1.0)
+    - Google-Maps-iOS-Utils/Heatmap (= 2.1.0)
+    - Google-Maps-iOS-Utils/QuadTree (= 2.1.0)
+    - GoogleMaps
+  - Google-Maps-iOS-Utils/Clustering (2.1.0):
+    - Google-Maps-iOS-Utils/QuadTree
+    - GoogleMaps
+  - Google-Maps-iOS-Utils/Geometry (2.1.0):
+    - GoogleMaps
+  - Google-Maps-iOS-Utils/Heatmap (2.1.0):
+    - Google-Maps-iOS-Utils/QuadTree
+    - GoogleMaps
+  - Google-Maps-iOS-Utils/QuadTree (2.1.0):
+    - GoogleMaps
+  - GoogleMaps (2.5.0):
+    - GoogleMaps/Maps (= 2.5.0)
+  - GoogleMaps/Base (2.5.0)
+  - GoogleMaps/Maps (2.5.0):
+    - GoogleMaps/Base
   - React (0.59.1):
     - React/Core (= 0.59.1)
+  - react-native-google-maps (0.23.0):
+    - Google-Maps-iOS-Utils (= 2.1.0)
+    - GoogleMaps (= 2.5.0)
+    - React
   - react-native-maps (0.23.0):
     - React
   - react-native-netinfo (1.3.0):
@@ -77,6 +102,9 @@ DEPENDENCIES:
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - Google-Maps-iOS-Utils
+  - GoogleMaps
+  - react-native-google-maps (from `../node_modules/react-native-maps`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
@@ -100,6 +128,8 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - boost-for-react-native
+    - Google-Maps-iOS-Utils
+    - GoogleMaps
 
 EXTERNAL SOURCES:
   DoubleConversion:
@@ -110,6 +140,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
   React:
     :path: "../node_modules/react-native"
+  react-native-google-maps:
+    :path: "../node_modules/react-native-maps"
   react-native-maps:
     :path: "../node_modules/react-native-maps"
   react-native-netinfo:
@@ -128,7 +160,10 @@ SPEC CHECKSUMS:
   DoubleConversion: bb338842f62ab1d708ceb63ec3d999f0f3d98ecd
   Folly: de497beb10f102453a1afa9edbf8cf8a251890de
   glog: aefd1eb5dda2ab95ba0938556f34b98e2da3a60d
+  Google-Maps-iOS-Utils: c32891ff472eaaa1fca032beedafa1a013af7875
+  GoogleMaps: c087b8e5dfe87ca6ebf59adb9b4894a4146bec4f
   React: 1d605e098d69bdf08960787f3446f0a9dc2e2ccf
+  react-native-google-maps: 77af0fa3b5325c72c107d054677911f6e6170496
   react-native-maps: bb480348a3fe1e5a811fed1ba3387b329161c5cc
   react-native-netinfo: f4039dc64d3a55da59d6d03d4bd667d0a9f5450e
   react-native-splash-screen: a49be22f0f6648b8416f3bd28258645eeaa5b42b
@@ -136,6 +171,6 @@ SPEC CHECKSUMS:
   RNVectorIcons: 8c52e1e8da1153613fdef44748e865c25556cb9c
   yoga: 128daf064cacaede0c3bb27424b6b4c71052e6cd
 
-PODFILE CHECKSUM: 5403c0b3700d8439bb2d520506880df20750b87b
+PODFILE CHECKSUM: 5dfb7345a21a57bde43825f1487ada0a468739a5
 
 COCOAPODS: 1.5.3
