@@ -116,7 +116,7 @@ class mapView extends PureComponent {
     );
   };
 
-  hasLocationPermission = async () => {
+  _hasLocationPermission = async () => {
     if (Platform.OS === 'ios' || (Platform.OS === 'android' && Platform.Version < 23)) {
       return true;
     }
@@ -142,10 +142,10 @@ class mapView extends PureComponent {
     return false;
   };
 
-  getLocation = async () => {
-    const hasLocationPermission = await this.hasLocationPermission();
+  _getLocation = async () => {
+    const _hasLocationPermission = await this._hasLocationPermission();
 
-    if (!hasLocationPermission) return;
+    if (!_hasLocationPermission) return;
 
     Geolocation.getCurrentPosition(
       ({ coords: { latitude, longitude } }) => {
@@ -160,6 +160,13 @@ class mapView extends PureComponent {
     );
   };
 
+  _goToRegion = (region, padding) => {
+    this.map.fitToCoordinates(region, {
+      edgePadding: { top: padding, right: padding, bottom: padding, left: padding },
+      animated: true,
+    });
+  };
+
   _renderMarkers = () => {
     if (this.state.markers) {
       return this.state.markers.map((marker, i) => {
@@ -171,7 +178,25 @@ class mapView extends PureComponent {
               longitude: marker.geometry.coordinates[0],
             }}
             onPress={() => {
-              alert('hello');
+              console.warn(marker);
+              const zoomLevel = 80 / 100.0000000001;
+              const Lat = LATITUDE_DELTA - LATITUDE_DELTA * zoomLevel;
+              const Lng = LONGITUDE_DELTA - LONGITUDE_DELTA * zoomLevel;
+              if (Lat >= 0 && Lat <= 180) {
+                this.map.animateToRegion(
+                  {
+                    latitude: marker.geometry.coordinates[1],
+                    longitude: marker.geometry.coordinates[0],
+                    latitudeDelta: Lat,
+                    longitudeDelta: Lng,
+                  },
+                  300,
+                );
+              } else {
+                console.error(
+                  'latitudeDelta Should be In tha range of 1 to 180 or longitudeDelta Should be In tha range of 1 to 360 ',
+                );
+              }
             }}
           >
             <MapClusterMarker {...marker} />
