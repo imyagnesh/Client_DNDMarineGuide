@@ -31,9 +31,7 @@ const index = ({ navigation: { navigate } }) => {
         value="Services"
         onPress={() => {
           navigate('Categories', {
-            search: {
-              service: '',
-            },
+            search: {},
           });
         }}
       />

@@ -1,17 +1,11 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { View, ActivityIndicator, FlatList, StyleSheet, Text, Dimensions } from 'react-native';
+import { View, ActivityIndicator, FlatList, StyleSheet, Text } from 'react-native';
+import { StackActions, NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RectButton } from 'react-native-gesture-handler';
-import MapView, { Marker, ProviderPropType, PROVIDER_GOOGLE } from 'react-native-maps';
-
-const { width, height } = Dimensions.get('window');
-
-const ASPECT_RATIO = width / height;
-const LATITUDE = 37.78825;
-const LONGITUDE = -122.4324;
-const LATITUDE_DELTA = 0.0922;
-const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+import MapView from './mapView';
+import NoResult from '../../components/NoResult';
 
 export default class index extends PureComponent {
   static propTypes = {
@@ -48,12 +42,6 @@ export default class index extends PureComponent {
   state = {
     page: 1,
     result: 20,
-    region: {
-      latitude: LATITUDE,
-      longitude: LONGITUDE,
-      latitudeDelta: LATITUDE_DELTA,
-      longitudeDelta: LONGITUDE_DELTA,
-    },
   };
 
   constructor(props) {
@@ -155,22 +143,22 @@ export default class index extends PureComponent {
         state: { params },
       },
     } = this.props;
-    if (params && params.view === 'map') {
+    if (!loading && businesses && businesses.length <= 0) {
       return (
-        <MapView
-          style={{
-            ...StyleSheet.absoluteFillObject,
+        <NoResult
+          onSearchAgain={() => {
+            const resetAction = StackActions.reset({
+              index: 0,
+              actions: [NavigationActions.navigate({ routeName: 'Main' })],
+            });
+            this.props.navigation.dispatch(resetAction);
           }}
-          initialRegion={this.state.region}
-          provider={PROVIDER_GOOGLE}
-        >
-          <Marker
-            title="This is a title"
-            description="This is a description"
-            coordinate={this.state.region}
-          />
-        </MapView>
+        />
       );
+    }
+
+    if (params && params.view === 'map' && businesses.length > 0) {
+      return <MapView businesses={businesses} />;
     }
     return (
       <FlatList

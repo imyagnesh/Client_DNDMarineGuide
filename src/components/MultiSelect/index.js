@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { View, FlatList, TextInput, StyleSheet, ActivityIndicator } from 'react-native';
 import { RectButton, BorderlessButton } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import NoResult from '../NoResult';
 
 export default class index extends PureComponent {
   static propTypes = {
@@ -12,6 +13,7 @@ export default class index extends PureComponent {
     uniqueKey: PropTypes.any.isRequired,
     onSelectData: PropTypes.func.isRequired,
     loading: PropTypes.bool,
+    onSearchAgain: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -155,9 +157,12 @@ export default class index extends PureComponent {
 
   render() {
     const { data, search } = this.state;
-    const { searchKey, loading } = this.props;
+    const { searchKey, loading, onSearchAgain } = this.props;
 
     const filteredCities = data.filter(x => x[searchKey].includes(search));
+    if (!loading && filteredCities && filteredCities.length <= 0) {
+      return <NoResult onSearchAgain={onSearchAgain} />;
+    }
     return (
       <FlatList
         style={{ flex: 1 }}

@@ -19,6 +19,7 @@
   "telemetry.enableTelemetry": false,
   "cSpell.words": [
     "Unmount",
-    "netinfo"
+    "netinfo",
+    "supercluster"
   ]
 }

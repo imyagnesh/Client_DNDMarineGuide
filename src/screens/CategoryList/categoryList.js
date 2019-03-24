@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Text } from 'react-native';
+import { StackActions, NavigationActions } from 'react-navigation';
 import { RectButton } from 'react-native-gesture-handler';
 import MultiSelect from '../../components/MultiSelect';
 
@@ -91,6 +92,13 @@ export default class index extends PureComponent {
         uniqueKey="bus_cat_cd"
         searchKey="bus_cat_cd_desc"
         loading={loading}
+        onSearchAgain={() => {
+          const resetAction = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({ routeName: 'Main' })],
+          });
+          this.props.navigation.dispatch(resetAction);
+        }}
       />
     );
   }

@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Text } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
+import { StackActions, NavigationActions } from 'react-navigation';
 import MultiSelect from '../../components/MultiSelect';
 
 export default class index extends PureComponent {
@@ -91,6 +92,13 @@ export default class index extends PureComponent {
         uniqueKey="marina_cd"
         searchKey="mar_name"
         loading={loading}
+        onSearchAgain={() => {
+          const resetAction = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({ routeName: 'Main' })],
+          });
+          this.props.navigation.dispatch(resetAction);
+        }}
       />
     );
   }
