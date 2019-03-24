@@ -135,6 +135,14 @@ export default class index extends PureComponent {
     );
   };
 
+  _onSearchAgain = () => {
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'Main' })],
+    });
+    this.props.navigation.dispatch(resetAction);
+  };
+
   render() {
     const {
       businesses: { businesses },
@@ -143,23 +151,15 @@ export default class index extends PureComponent {
         state: { params },
       },
     } = this.props;
+
     if (!loading && businesses && businesses.length <= 0) {
-      return (
-        <NoResult
-          onSearchAgain={() => {
-            const resetAction = StackActions.reset({
-              index: 0,
-              actions: [NavigationActions.navigate({ routeName: 'Main' })],
-            });
-            this.props.navigation.dispatch(resetAction);
-          }}
-        />
-      );
+      return <NoResult onSearchAgain={this._onSearchAgain} />;
     }
 
     if (params && params.view === 'map' && businesses.length > 0) {
       return <MapView businesses={businesses} />;
     }
+
     return (
       <FlatList
         data={businesses}
