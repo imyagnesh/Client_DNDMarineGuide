@@ -24,6 +24,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 class mapView extends PureComponent {
   static propTypes = {
     businesses: PropTypes.array.isRequired,
+    openDetails: PropTypes.func.isRequired,
   };
 
   state = {
@@ -178,24 +179,29 @@ class mapView extends PureComponent {
               longitude: marker.geometry.coordinates[0],
             }}
             onPress={() => {
-              console.warn(marker);
-              const zoomLevel = 80 / 100.0000000001;
-              const Lat = LATITUDE_DELTA - LATITUDE_DELTA * zoomLevel;
-              const Lng = LONGITUDE_DELTA - LONGITUDE_DELTA * zoomLevel;
-              if (Lat >= 0 && Lat <= 180) {
-                this.map.animateToRegion(
-                  {
-                    latitude: marker.geometry.coordinates[1],
-                    longitude: marker.geometry.coordinates[0],
-                    latitudeDelta: Lat,
-                    longitudeDelta: Lng,
-                  },
-                  300,
-                );
-              } else {
-                console.error(
-                  'latitudeDelta Should be In tha range of 1 to 180 or longitudeDelta Should be In tha range of 1 to 360 ',
-                );
+              if (marker.properties) {
+                if (marker.properties.cluster) {
+                  const zoomLevel = 90 / 100.0000000001;
+                  const Lat = LATITUDE_DELTA - LATITUDE_DELTA * zoomLevel;
+                  const Lng = LONGITUDE_DELTA - LONGITUDE_DELTA * zoomLevel;
+                  if (Lat >= 0 && Lat <= 180) {
+                    this.map.animateToRegion(
+                      {
+                        latitude: marker.geometry.coordinates[1],
+                        longitude: marker.geometry.coordinates[0],
+                        latitudeDelta: Lat,
+                        longitudeDelta: Lng,
+                      },
+                      300,
+                    );
+                  } else {
+                    console.error(
+                      'latitudeDelta Should be In tha range of 1 to 180 or longitudeDelta Should be In tha range of 1 to 360 ',
+                    );
+                  }
+                } else if (marker.properties.id) {
+                  this.props.openDetails(marker.properties.id);
+                }
               }
             }}
           >

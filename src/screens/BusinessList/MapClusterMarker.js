@@ -13,7 +13,7 @@ export default class MapClusterMarker extends PureComponent {
       !this.props.properties.hasOwnProperty('cluster') ||
       !this.props.properties.cluster
     ) {
-      return <Icon ref="marker" name="place" size={32} color={circleColour} />;
+      return <Icon name="place" size={32} color={circleColour} />;
     }
 
     const pointCount = this.props.properties.point_count_abbreviated;
@@ -22,7 +22,7 @@ export default class MapClusterMarker extends PureComponent {
     const fontSize = 15;
 
     return (
-      <View ref="marker">
+      <View>
         <Svg height={height} width={width}>
           <Circle
             cx={width / 2}

@@ -157,7 +157,7 @@ export default class index extends PureComponent {
     }
 
     if (params && params.view === 'map' && businesses.length > 0) {
-      return <MapView businesses={businesses} />;
+      return <MapView businesses={businesses} openDetails={() => alert('openDetails')} />;
     }
 
     return (
