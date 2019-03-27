@@ -1,3 +1,5 @@
+import React from 'react';
+import { Text, Image, View, PixelRatio } from 'react-native';
 import { createStackNavigator, createAppContainer, createSwitchNavigator } from 'react-navigation';
 import SplashScreen from './screens/SplashScreen';
 import MainScreen from './screens/MainScreen';
@@ -29,6 +31,28 @@ const AppStack = createStackNavigator(
   {
     initialRouteName: 'Main',
     headerMode: 'screen',
+    headerLayoutPreset: 'center',
+    defaultNavigationOptions: {
+      headerStyle: {
+        backgroundColor: '#5DAFDE',
+      },
+      headerTintColor: '#FFF',
+      headerTitle: () => (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Image
+            resizeMode="contain"
+            style={{ flex: 1, height: null, width: null, aspectRatio: PixelRatio.get() }}
+            source={require('./img/LogoSM.png')}
+          />
+        </View>
+      ),
+    },
   },
 );
 

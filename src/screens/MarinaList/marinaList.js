@@ -20,7 +20,6 @@ export default class index extends PureComponent {
   }) => ({
     headerRight: (
       <RectButton
-        style={{ marginRight: 10 }}
         onPress={() => {
           if (params && params.onNextPress) {
             params.onNextPress();
@@ -29,7 +28,14 @@ export default class index extends PureComponent {
           }
         }}
       >
-        <Text style={{ padding: 8 }}>Next</Text>
+        <Text
+          style={{ padding: 10, color: '#fff', fontSize: 17 }}
+          numberOfLines={1}
+          allowFontScaling={false}
+          accessible={false}
+        >
+          Next
+        </Text>
       </RectButton>
     ),
   });
