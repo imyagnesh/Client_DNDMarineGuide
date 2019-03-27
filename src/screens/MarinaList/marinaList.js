@@ -21,11 +21,7 @@ export default class index extends PureComponent {
     headerRight: (
       <RectButton
         onPress={() => {
-          if (params && params.onNextPress) {
-            params.onNextPress();
-          } else {
-            alert('please select data');
-          }
+          params.onNextPress();
         }}
       >
         <Text
@@ -56,6 +52,25 @@ export default class index extends PureComponent {
     fetchMarinas(search);
   }
 
+  componentDidMount() {
+    const {
+      navigation: {
+        setParams,
+        navigate,
+        state: { params },
+      },
+    } = this.props;
+
+    const { search } = params;
+
+    setParams({
+      onNextPress: () =>
+        navigate('Categories', {
+          search,
+        }),
+    });
+  }
+
   componentWillReceiveProps(nextProps) {
     this.setState({
       marinas: nextProps.marinas,
@@ -78,10 +93,15 @@ export default class index extends PureComponent {
 
       const { search } = params;
 
+      let newSearch = search;
+      if (data.length > 0) {
+        newSearch = { ...search, cities: data.map(x => x.marina_cd).toString() };
+      }
+
       setParams({
         onNextPress: () =>
           navigate('Categories', {
-            search: { ...search, marinas: data.map(x => x.marina_cd).toString() },
+            search: newSearch,
           }),
       });
     }

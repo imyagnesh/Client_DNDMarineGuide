@@ -21,11 +21,7 @@ export default class index extends PureComponent {
     headerRight: (
       <RectButton
         onPress={() => {
-          if (params && params.onNextPress) {
-            params.onNextPress();
-          } else {
-            alert('please select data');
-          }
+          params.onNextPress();
         }}
       >
         <Text
@@ -56,6 +52,25 @@ export default class index extends PureComponent {
     fetchCities(search);
   }
 
+  componentDidMount() {
+    const {
+      navigation: {
+        setParams,
+        navigate,
+        state: { params },
+      },
+    } = this.props;
+
+    const { search } = params;
+
+    setParams({
+      onNextPress: () =>
+        navigate(search.service === 'Dine' ? 'BusinessList' : 'Categories', {
+          search,
+        }),
+    });
+  }
+
   componentWillReceiveProps(nextProps) {
     this.setState({
       cities: nextProps.cities,
@@ -78,10 +93,15 @@ export default class index extends PureComponent {
 
       const { search } = params;
 
+      let newSearch = search;
+      if (data.length > 0) {
+        newSearch = { ...search, cities: data.map(x => x.bus_city).toString() };
+      }
+
       setParams({
         onNextPress: () =>
           navigate(search.service === 'Dine' ? 'BusinessList' : 'Categories', {
-            search: { ...search, cities: data.map(x => x.bus_city).toString() },
+            search: newSearch,
           }),
       });
     }

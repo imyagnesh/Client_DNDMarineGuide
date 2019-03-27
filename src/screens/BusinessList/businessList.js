@@ -4,6 +4,7 @@ import { View, ActivityIndicator, FlatList, StyleSheet, Text } from 'react-nativ
 import { StackActions, NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RectButton } from 'react-native-gesture-handler';
+import { formatPhoneNumber } from 'utils';
 import MapView from './mapView';
 import Error from '../../components/Error';
 
@@ -22,10 +23,8 @@ export default class index extends PureComponent {
       setParams,
     },
   }) => ({
-    headerTransparent: params && params.view === 'map',
     headerRight: (
       <RectButton
-        style={{ marginRight: 10 }}
         onPress={() => {
           if (params && params.view === 'map') {
             setParams({ view: 'list' });
@@ -34,7 +33,14 @@ export default class index extends PureComponent {
           }
         }}
       >
-        <Text style={{ padding: 8 }}>{params && params.view === 'map' ? 'List' : 'Map'}</Text>
+        <Text
+          style={{ padding: 10, color: '#fff', fontSize: 17 }}
+          numberOfLines={1}
+          allowFontScaling={false}
+          accessible={false}
+        >
+          {params && params.view === 'map' ? 'List' : 'Map'}
+        </Text>
       </RectButton>
     ),
   });
@@ -64,11 +70,26 @@ export default class index extends PureComponent {
       navigation: { navigate },
     } = this.props;
     return (
-      <RectButton onPress={() => navigate('BusinessDetails', { businessDetails: item })}>
-        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', padding: 10 }}>
+      <RectButton
+        style={{ flexDirection: 'row' }}
+        onPress={() => navigate('BusinessDetails', { businessDetails: item })}
+      >
+        <View style={{ flex: 1, flexDirection: 'row', padding: 10, alignItems: 'center' }}>
           <View style={{ flex: 1 }}>
-            <Text>{item.bus_name}</Text>
-            <Text>{item.bus_phone}</Text>
+            <Text
+              style={{ fontSize: 16, fontWeight: '400', lineHeight: 24 }}
+              numberOfLines={1}
+              allowFontScaling={false}
+            >
+              {item.bus_name}
+            </Text>
+            <Text
+              style={{ fontSize: 16, fontWeight: '400', lineHeight: 24 }}
+              numberOfLines={1}
+              allowFontScaling={false}
+            >
+              {formatPhoneNumber(item.bus_phone)}
+            </Text>
           </View>
           <Icon name="play-arrow" size={18} color="#4A4A4A" />
         </View>
@@ -126,7 +147,6 @@ export default class index extends PureComponent {
     return (
       <View
         style={{
-          flex: 1,
           flexDirection: 'row',
           height: StyleSheet.hairlineWidth,
           backgroundColor: '#4a4a4a',

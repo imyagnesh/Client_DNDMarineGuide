@@ -1,4 +1,4 @@
-import { PixelRatio, Platform, Dimensions } from 'react-native';
+import { PixelRatio, Platform, Dimensions, Linking, Alert } from 'react-native';
 
 export const ls = val => PixelRatio.getPixelSizeForLayoutSize(val);
 export const os = Platform.OS;
@@ -44,3 +44,26 @@ export const action = (type, payload, meta = null) => ({
   payload,
   meta,
 });
+
+export const formatPhoneNumber = phoneNumberString => {
+  const cleaned = `${phoneNumberString}`.replace(/\D/g, '');
+  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+  if (match) {
+    return `${match[1]}-${match[2]}-${match[3]}`;
+  }
+  return '';
+};
+
+export const openLink = url => {
+  Linking.canOpenURL(url)
+    .then(supported => {
+      if (!supported) {
+        Alert.alert('Error', 'Url Not supported');
+      } else {
+        Linking.openURL(url);
+      }
+    })
+    .catch(() => {
+      Alert.alert('Error', 'Unable to open Url');
+    });
+};
