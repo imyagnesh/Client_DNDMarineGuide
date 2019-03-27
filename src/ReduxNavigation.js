@@ -4,7 +4,7 @@ import { BackHandler, Alert } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import { connect } from 'react-redux';
 import { NavigationActions } from 'react-navigation';
-import NoInternet from './components/NoInternet';
+import NoInternet from './components/Error';
 import { App } from './App';
 
 class ReduxNavigation extends PureComponent {
@@ -69,7 +69,14 @@ class ReduxNavigation extends PureComponent {
     const { dispatch, state } = this.props;
     const { isConnected } = this.state;
     if (!isConnected) {
-      return <NoInternet checkNetwork={this.checkNetwork} />;
+      return (
+        <NoInternet
+          title="No Connection"
+          text="No Internet connection found. check your connection of try again."
+          buttonText="Try Again"
+          onRetry={this.checkNetwork}
+        />
+      );
     }
     return <App dispatch={dispatch} state={state} />;
   }

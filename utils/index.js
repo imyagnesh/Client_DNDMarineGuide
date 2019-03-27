@@ -1,7 +1,9 @@
-import { PixelRatio, Platform } from 'react-native';
+import { PixelRatio, Platform, Dimensions } from 'react-native';
 
 export const ls = val => PixelRatio.getPixelSizeForLayoutSize(val);
 export const os = Platform.OS;
+
+export const { width: WIDTH, height: HEIGHT } = Dimensions.get('window');
 
 export const apiUrl = os === 'ios' ? 'http://127.0.0.1:9890/api' : 'http://10.0.2.2:9890/api';
 export const edition = 'PNW';

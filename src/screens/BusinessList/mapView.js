@@ -12,6 +12,7 @@ import Supercluster from 'supercluster';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import MapClusterMarker from './MapClusterMarker';
+import DetailView from './detailAnimation';
 
 const { width, height } = Dimensions.get('window');
 
@@ -241,6 +242,7 @@ class mapView extends PureComponent {
         >
           {this._renderMarkers()}
         </MapView>
+        <DetailView />
       </View>
     );
   }

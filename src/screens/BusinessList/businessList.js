@@ -5,7 +5,7 @@ import { StackActions, NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RectButton } from 'react-native-gesture-handler';
 import MapView from './mapView';
-import NoResult from '../../components/NoResult';
+import Error from '../../components/Error';
 
 export default class index extends PureComponent {
   static propTypes = {
@@ -153,7 +153,14 @@ export default class index extends PureComponent {
     } = this.props;
 
     if (!loading && businesses && businesses.length <= 0) {
-      return <NoResult onSearchAgain={this._onSearchAgain} />;
+      return (
+        <Error
+          title="Sorry! no Result Found"
+          text="Please modify your search criteria and you will find results matching your needs"
+          buttonText="Search Again"
+          onRetry={this._onSearchAgain}
+        />
+      );
     }
 
     if (params && params.view === 'map' && businesses.length > 0) {

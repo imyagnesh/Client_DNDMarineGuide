@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { View, FlatList, TextInput, StyleSheet, ActivityIndicator } from 'react-native';
 import { RectButton, BorderlessButton } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import NoResult from '../NoResult';
+import Error from '../Error';
 
 export default class index extends PureComponent {
   static propTypes = {
@@ -161,7 +161,14 @@ export default class index extends PureComponent {
 
     const filteredCities = data.filter(x => x[searchKey].includes(search));
     if (!loading && filteredCities && filteredCities.length <= 0) {
-      return <NoResult onSearchAgain={onSearchAgain} />;
+      return (
+        <Error
+          title="Sorry! no Result Found"
+          text="Please modify your search criteria and you will find results matching your needs"
+          buttonText="Search Again"
+          onRetry={onSearchAgain}
+        />
+      );
     }
     return (
       <FlatList

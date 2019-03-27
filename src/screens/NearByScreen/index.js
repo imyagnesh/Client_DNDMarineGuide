@@ -1,13 +1,23 @@
 import React, { Component } from 'react';
-import { PermissionsAndroid, Platform, StyleSheet, Text, ToastAndroid, View } from 'react-native';
+import PropTypes from 'prop-types';
+import {
+  PermissionsAndroid,
+  Platform,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  View,
+  ActivityIndicator,
+} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
+import { StackActions, NavigationActions } from 'react-navigation';
+import Error from '../../components/Error';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
     paddingHorizontal: 12,
   },
   result: {
@@ -26,9 +36,14 @@ const styles = StyleSheet.create({
 });
 
 export default class App extends Component<{}> {
+  static propTypes = {
+    navigation: PropTypes.object.isRequired,
+  };
+
   state = {
     loading: false,
-    location: {},
+    city: '',
+    error: false,
   };
 
   componentDidMount() {
@@ -68,36 +83,98 @@ export default class App extends Component<{}> {
 
     this.setState({ loading: true }, () => {
       Geolocation.getCurrentPosition(
-        position => {
-          this.setState({ location: position, loading: false });
+        async position => {
           const {
             coords: { latitude, longitude },
           } = position;
-          fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?address=${latitude},${longitude}&key=AIzaSyBX6UV7VgQiY7wMFw1eThn8sEgnZXLNjGA`,
-          )
-            .then(response => response.json())
-            .then(responseJson => {
-              console.warn(`ADDRESS GEOCODE is BACK!! => ${JSON.stringify(responseJson)}`);
-            });
+          try {
+            const city = await this.getCityDetails(latitude, longitude);
+            this.setState({ error: '', city, loading: false });
+          } catch (error) {
+            this.setState({ error, city: '', loading: false });
+          }
         },
         error => {
-          this.setState({ location: error, loading: false });
-          console.log(error);
+          this.setState({ city: '', error, loading: false });
         },
         { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000, distanceFilter: 50 },
       );
     });
   };
 
+  getCityDetails = (latitude, longitude) => {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&sensor=false&key=AIzaSyBpQb8H-ziLM-s8K9A0UuVxaBO08DANUG0`,
+      )
+        .then(response => response.json())
+        .then(responseJson => {
+          if (responseJson.results) {
+            let city = '';
+            responseJson.results.forEach(addressComponent => {
+              if (addressComponent.types[0] === 'locality') {
+                city = addressComponent.address_components[0].long_name;
+              }
+            });
+            resolve(city);
+          }
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  };
+
+  _onSearchAgain = () => {
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'Main' })],
+    });
+    this.props.navigation.dispatch(resetAction);
+  };
+
+  _onContinueSearch = () => {
+    const {
+      navigation: {
+        navigate,
+        state: { params },
+      },
+    } = this.props;
+    const { city } = this.state;
+
+    const { search } = params;
+
+    navigate(search.service === 'Dock' ? 'BusinessList' : 'Categories', {
+      search: { ...search, cities: [city].toString() },
+    });
+  };
+
   render() {
-    const { location } = this.state;
-    return (
-      <View style={styles.container}>
-        <View style={styles.result}>
-          <Text>{JSON.stringify(location, null, 4)}</Text>
+    const { city, error, loading } = this.state;
+    if (loading) {
+      return (
+        <View style={styles.container}>
+          <ActivityIndicator size="large" animating />
         </View>
-      </View>
+      );
+    }
+    if (error) {
+      return (
+        <Error
+          title="Internal Error"
+          text="Oops! Something went wrong Try Again"
+          buttonText="Try Again"
+          onRetry={this._onSearchAgain}
+        />
+      );
+    }
+    return (
+      <Error
+        title="Your Current Location"
+        text={city}
+        buttonText="Next"
+        onRetry={this._onContinueSearch}
+      />
     );
   }
 }

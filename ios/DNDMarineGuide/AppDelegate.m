@@ -17,7 +17,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  [GMSServices provideAPIKey:@"AIzaSyBX6UV7VgQiY7wMFw1eThn8sEgnZXLNjGA"];
+  [GMSServices provideAPIKey:@"AIzaSyBL-BNNkFkt3iKgL-Yh--qcyDT5ROqXJlU"];
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"DNDMarineGuide"
