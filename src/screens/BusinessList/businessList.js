@@ -168,6 +168,7 @@ export default class index extends PureComponent {
       businesses: { businesses },
       loading,
       navigation: {
+        navigate,
         state: { params },
       },
     } = this.props;
@@ -184,7 +185,12 @@ export default class index extends PureComponent {
     }
 
     if (params && params.view === 'map' && businesses.length > 0) {
-      return <MapView businesses={businesses} openDetails={() => alert('openDetails')} />;
+      return (
+        <MapView
+          businesses={businesses}
+          openDetails={item => navigate('BusinessDetails', { businessDetails: item })}
+        />
+      );
     }
 
     return (

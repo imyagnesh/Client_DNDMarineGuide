@@ -1,17 +1,36 @@
 import React, { Component } from 'react';
-import { Animated, Text, Platform } from 'react-native';
+import PropTypes from 'prop-types';
+import { Animated, Text, Platform, View } from 'react-native';
+import { BorderlessButton } from 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import { WIDTH } from 'utils';
 
 const viewHeight = 200;
 
 export default class detailAnimation extends Component {
-  static propTypes = {};
+  static propTypes = {
+    visible: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+    children: PropTypes.element.isRequired,
+  };
 
   state = {
     hideAnim: new Animated.Value(viewHeight),
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.visible !== this.props.visible) {
+      const { hideAnim } = this.state;
+      Animated.timing(hideAnim, {
+        toValue: nextProps.visible ? 0 : viewHeight,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  }
+
   render() {
+    const { onClose } = this.props;
     return (
       <Animated.View
         style={{
@@ -44,7 +63,26 @@ export default class detailAnimation extends Component {
           ],
         }}
       >
-        <Text>Hello World</Text>
+        <BorderlessButton
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'flex-end',
+          }}
+          onPress={onClose}
+        >
+          <View
+            style={{
+              height: 30,
+              width: 30,
+              backgroundColor: 'rgba(0,0,0,0.6)',
+              justifyContent: 'center',
+              borderRadius: 15,
+            }}
+          >
+            <Icon name="close" style={{ textAlign: 'center' }} size={24} color="#fff" />
+          </View>
+        </BorderlessButton>
+        {this.props.children}
       </Animated.View>
     );
   }

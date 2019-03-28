@@ -7,12 +7,16 @@ import {
   Platform,
   ToastAndroid,
   StyleSheet,
+  Text,
 } from 'react-native';
 import Supercluster from 'supercluster';
+import { formatPhoneNumber } from 'utils';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
+
 import MapClusterMarker from './MapClusterMarker';
 import DetailView from './detailAnimation';
+import Button from '../../components/Button';
 
 const { width, height } = Dimensions.get('window');
 
@@ -35,6 +39,8 @@ class mapView extends PureComponent {
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA,
     },
+    visible: false,
+    business: null,
   };
 
   constructor(props) {
@@ -180,11 +186,11 @@ class mapView extends PureComponent {
               longitude: marker.geometry.coordinates[0],
             }}
             onPress={() => {
+              const zoomLevel = 90 / 100.0000000001;
+              const Lat = LATITUDE_DELTA - LATITUDE_DELTA * zoomLevel;
+              const Lng = LONGITUDE_DELTA - LONGITUDE_DELTA * zoomLevel;
               if (marker.properties) {
                 if (marker.properties.cluster) {
-                  const zoomLevel = 90 / 100.0000000001;
-                  const Lat = LATITUDE_DELTA - LATITUDE_DELTA * zoomLevel;
-                  const Lng = LONGITUDE_DELTA - LONGITUDE_DELTA * zoomLevel;
                   if (Lat >= 0 && Lat <= 180) {
                     this.map.animateToRegion(
                       {
@@ -201,7 +207,22 @@ class mapView extends PureComponent {
                     );
                   }
                 } else if (marker.properties.id) {
-                  this.props.openDetails(marker.properties.id);
+                  const business = this.props.businesses.find(
+                    x => x.bus_cd === marker.properties.id,
+                  );
+                  if (business) {
+                    this.map.animateToRegion(
+                      {
+                        latitude: business.bus_latitude,
+                        longitude: business.bus_longitude,
+                        latitudeDelta: Lat,
+                        longitudeDelta: Lng,
+                      },
+                      300,
+                    );
+                    this.setState({ business, visible: true });
+                  }
+                  // this.props.openDetails(marker.properties.id);
                 }
               }
             }}
@@ -215,6 +236,8 @@ class mapView extends PureComponent {
   };
 
   render() {
+    const { visible, business } = this.state;
+    const { openDetails } = this.props;
     return (
       <View
         style={{
@@ -242,7 +265,32 @@ class mapView extends PureComponent {
         >
           {this._renderMarkers()}
         </MapView>
-        <DetailView />
+        <DetailView
+          visible={visible}
+          onClose={() => this.setState({ visible: false, business: null })}
+        >
+          {business && (
+            <View style={{ flex: 1, justifyContent: 'space-between' }}>
+              <View>
+                <Text
+                  style={{ fontSize: 16, fontWeight: '400', lineHeight: 24 }}
+                  numberOfLines={1}
+                  allowFontScaling={false}
+                >
+                  {business.bus_name}
+                </Text>
+                <Text
+                  style={{ fontSize: 16, fontWeight: '400', lineHeight: 24 }}
+                  numberOfLines={1}
+                  allowFontScaling={false}
+                >
+                  {formatPhoneNumber(business.bus_phone)}
+                </Text>
+              </View>
+              <Button value="View Details" onPress={() => openDetails(business)} />
+            </View>
+          )}
+        </DetailView>
       </View>
     );
   }
