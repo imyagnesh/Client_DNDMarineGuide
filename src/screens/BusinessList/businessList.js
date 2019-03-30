@@ -26,6 +26,9 @@ export default class index extends PureComponent {
     fetchBusinesses: PropTypes.func.isRequired,
     businesses: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
+    clearAdvertisement: PropTypes.func.isRequired,
+    getAdvertisement: PropTypes.func.isRequired,
+    advertisement: PropTypes.object.isRequired,
   };
 
   static navigationOptions = ({
@@ -68,13 +71,18 @@ export default class index extends PureComponent {
       navigation: {
         state: { params },
       },
+      clearAdvertisement,
       clearBusinesses,
       fetchBusinesses,
+      getAdvertisement,
     } = props;
     const { search } = params;
     const { page, result } = this.state;
     clearBusinesses();
+    clearAdvertisement();
     fetchBusinesses({ page, result, ...search });
+    getAdvertisement(1);
+
     this.getLocation();
   }
 
