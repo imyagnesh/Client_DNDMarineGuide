@@ -5,8 +5,10 @@ export const os = Platform.OS;
 
 export const { width: WIDTH, height: HEIGHT } = Dimensions.get('window');
 
-export const apiUrl = os === 'ios' ? 'http://127.0.0.1:9890/api' : 'http://10.0.2.2:9890/api';
 export const edition = 'PNW';
+
+const timeout = m =>
+  new Promise((_, reject) => setTimeout(() => reject(new Error('Timed Out')), m));
 
 export const Api = (url, method, headers = {}, body = '') =>
   new Promise(async (resolve, reject) => {
@@ -24,16 +26,7 @@ export const Api = (url, method, headers = {}, body = '') =>
     try {
       const response = await fetch(url, options);
       const json = await response.json();
-
-      if (json.status) {
-        if (json.status.toUpperCase() === 'ERROR') {
-          reject(json.reason);
-        } else {
-          resolve(json.response);
-        }
-      } else {
-        resolve(json);
-      }
+      resolve(json);
     } catch (error) {
       reject(error);
     }

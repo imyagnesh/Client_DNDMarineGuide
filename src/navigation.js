@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, Image, View, PixelRatio } from 'react-native';
+import { Image, View, PixelRatio } from 'react-native';
 import { createStackNavigator, createAppContainer, createSwitchNavigator } from 'react-navigation';
 import SplashScreen from './screens/SplashScreen';
 import MainScreen from './screens/MainScreen';

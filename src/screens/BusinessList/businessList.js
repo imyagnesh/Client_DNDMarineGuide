@@ -201,7 +201,7 @@ export default class index extends PureComponent {
         ListFooterComponent={this._renderFooter}
         refreshing={loading}
         onEndReached={this._loadMore}
-        onEndReachedThreshold={0}
+        onEndReachedThreshold={100}
         ItemSeparatorComponent={this._itemSeparator}
       />
     );

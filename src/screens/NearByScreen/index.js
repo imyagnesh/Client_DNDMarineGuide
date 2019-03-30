@@ -4,13 +4,13 @@ import {
   PermissionsAndroid,
   Platform,
   StyleSheet,
-  Text,
   ToastAndroid,
   View,
   ActivityIndicator,
 } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import { StackActions, NavigationActions } from 'react-navigation';
+import Config from 'react-native-config';
 import Error from '../../components/Error';
 
 const styles = StyleSheet.create({
@@ -105,7 +105,9 @@ export default class App extends Component<{}> {
   getCityDetails = (latitude, longitude) => {
     return new Promise((resolve, reject) => {
       fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&sensor=false&key=AIzaSyBpQb8H-ziLM-s8K9A0UuVxaBO08DANUG0`,
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&sensor=false&key=${
+          Config.GOOGLE_GEOCODE_API_KEY
+        }`,
       )
         .then(response => response.json())
         .then(responseJson => {
