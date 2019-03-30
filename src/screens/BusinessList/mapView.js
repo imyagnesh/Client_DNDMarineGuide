@@ -1,22 +1,12 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  Dimensions,
-  PermissionsAndroid,
-  Platform,
-  ToastAndroid,
-  StyleSheet,
-  Text,
-} from 'react-native';
+import { View, Dimensions, StyleSheet } from 'react-native';
 import Supercluster from 'supercluster';
-import { formatPhoneNumber } from 'utils';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import Geolocation from 'react-native-geolocation-service';
+import BusinessListItem from './businessListItem';
 
 import MapClusterMarker from './MapClusterMarker';
 import DetailView from './detailAnimation';
-import Button from '../../components/Button';
 
 const { width, height } = Dimensions.get('window');
 
@@ -30,6 +20,7 @@ class mapView extends PureComponent {
   static propTypes = {
     businesses: PropTypes.array.isRequired,
     openDetails: PropTypes.func.isRequired,
+    currentLocation: PropTypes.object.isRequired,
   };
 
   state = {
@@ -124,57 +115,6 @@ class mapView extends PureComponent {
     );
   };
 
-  _hasLocationPermission = async () => {
-    if (Platform.OS === 'ios' || (Platform.OS === 'android' && Platform.Version < 23)) {
-      return true;
-    }
-
-    const hasPermission = await PermissionsAndroid.check(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-    );
-
-    if (hasPermission) return true;
-
-    const status = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-    );
-
-    if (status === PermissionsAndroid.RESULTS.GRANTED) return true;
-
-    if (status === PermissionsAndroid.RESULTS.DENIED) {
-      ToastAndroid.show('Location permission denied by user.', ToastAndroid.LONG);
-    } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-      ToastAndroid.show('Location permission revoked by user.', ToastAndroid.LONG);
-    }
-
-    return false;
-  };
-
-  _getLocation = async () => {
-    const _hasLocationPermission = await this._hasLocationPermission();
-
-    if (!_hasLocationPermission) return;
-
-    Geolocation.getCurrentPosition(
-      ({ coords: { latitude, longitude } }) => {
-        this.setState(state => ({
-          region: { ...state.region, latitude, longitude },
-        }));
-      },
-      () => {
-        ToastAndroid.show('Unable to get Current Position', ToastAndroid.LONG);
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000, distanceFilter: 50 },
-    );
-  };
-
-  _goToRegion = (region, padding) => {
-    this.map.fitToCoordinates(region, {
-      edgePadding: { top: padding, right: padding, bottom: padding, left: padding },
-      animated: true,
-    });
-  };
-
   _renderMarkers = () => {
     if (this.state.markers) {
       return this.state.markers.map((marker, i) => {
@@ -237,7 +177,7 @@ class mapView extends PureComponent {
 
   render() {
     const { visible, business } = this.state;
-    const { openDetails } = this.props;
+    const { openDetails, currentLocation } = this.props;
     return (
       <View
         style={{
@@ -270,25 +210,15 @@ class mapView extends PureComponent {
           onClose={() => this.setState({ visible: false, business: null })}
         >
           {business && (
-            <View style={{ flex: 1, justifyContent: 'space-between' }}>
-              <View>
-                <Text
-                  style={{ fontSize: 16, fontWeight: '400', lineHeight: 24 }}
-                  numberOfLines={1}
-                  allowFontScaling={false}
-                >
-                  {business.bus_name}
-                </Text>
-                <Text
-                  style={{ fontSize: 16, fontWeight: '400', lineHeight: 24 }}
-                  numberOfLines={1}
-                  allowFontScaling={false}
-                >
-                  {formatPhoneNumber(business.bus_phone)}
-                </Text>
-              </View>
-              <Button value="View Details" onPress={() => openDetails(business)} />
-            </View>
+            <BusinessListItem
+              item={business}
+              currentLocation={currentLocation}
+              onPress={distance => {
+                openDetails(business, distance);
+                this.setState({ visible: false, business: null });
+              }}
+              isMap
+            />
           )}
         </DetailView>
       </View>

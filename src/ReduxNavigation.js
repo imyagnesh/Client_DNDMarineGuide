@@ -29,7 +29,7 @@ class ReduxNavigation extends PureComponent {
 
   onBackPress = () => {
     const { dispatch, state } = this.props;
-    if (state.index === 0) {
+    if (state.routes[state.index] && state.routes[state.index].routes.length === 1) {
       Alert.alert(
         'Exit Application',
         'Are you sure you want to exit?',

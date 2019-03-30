@@ -1,12 +1,23 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { View, ActivityIndicator, FlatList, StyleSheet, Text } from 'react-native';
+import {
+  View,
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  PermissionsAndroid,
+  ToastAndroid,
+  Platform,
+} from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RectButton } from 'react-native-gesture-handler';
-import { formatPhoneNumber } from 'utils';
+import { os } from 'utils';
+
+import Geolocation from 'react-native-geolocation-service';
 import MapView from './mapView';
 import Error from '../../components/Error';
+import BusinessListItem from './businessListItem';
 
 export default class index extends PureComponent {
   static propTypes = {
@@ -48,6 +59,7 @@ export default class index extends PureComponent {
   state = {
     page: 1,
     result: 20,
+    currentLocation: null,
   };
 
   constructor(props) {
@@ -63,37 +75,20 @@ export default class index extends PureComponent {
     const { page, result } = this.state;
     clearBusinesses();
     fetchBusinesses({ page, result, ...search });
+    this.getLocation();
   }
 
   _renderItem = ({ item }) => {
     const {
       navigation: { navigate },
     } = this.props;
+    const { currentLocation } = this.state;
     return (
-      <RectButton
-        style={{ flexDirection: 'row' }}
-        onPress={() => navigate('BusinessDetails', { businessDetails: item })}
-      >
-        <View style={{ flex: 1, flexDirection: 'row', padding: 10, alignItems: 'center' }}>
-          <View style={{ flex: 1 }}>
-            <Text
-              style={{ fontSize: 16, fontWeight: '400', lineHeight: 24 }}
-              numberOfLines={1}
-              allowFontScaling={false}
-            >
-              {item.bus_name}
-            </Text>
-            <Text
-              style={{ fontSize: 16, fontWeight: '400', lineHeight: 24 }}
-              numberOfLines={1}
-              allowFontScaling={false}
-            >
-              {formatPhoneNumber(item.bus_phone)}
-            </Text>
-          </View>
-          <Icon name="play-arrow" size={18} color="#4A4A4A" />
-        </View>
-      </RectButton>
+      <BusinessListItem
+        item={item}
+        currentLocation={currentLocation}
+        onPress={distance => navigate('BusinessDetails', { businessDetails: item, distance })}
+      />
     );
   };
 
@@ -155,6 +150,64 @@ export default class index extends PureComponent {
     );
   };
 
+  hasLocationPermission = async () => {
+    if (os === 'ios' || (os === 'android' && Platform.Version < 23)) {
+      return true;
+    }
+
+    const hasPermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+
+    if (hasPermission) return true;
+
+    const status = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+
+    if (status === PermissionsAndroid.RESULTS.GRANTED) return true;
+
+    if (status === PermissionsAndroid.RESULTS.DENIED) {
+      ToastAndroid.show('Location permission denied by user.', ToastAndroid.LONG);
+    } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+      ToastAndroid.show('Location permission revoked by user.', ToastAndroid.LONG);
+    }
+
+    return false;
+  };
+
+  getLocation = async () => {
+    const hasLocationPermission = await this.hasLocationPermission();
+
+    if (!hasLocationPermission) return;
+
+    this.setState({ loading: true }, () => {
+      Geolocation.getCurrentPosition(
+        async position => {
+          try {
+            const {
+              coords: { latitude, longitude },
+            } = position;
+            this.setState({
+              currentLocation: {
+                latitude,
+                longitude,
+              },
+              error: false,
+              loading: false,
+            });
+          } catch (error) {
+            this.setState({ error, loading: false });
+          }
+        },
+        error => {
+          this.setState({ error, loading: false });
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000, distanceFilter: 50 },
+      );
+    });
+  };
+
   _onSearchAgain = () => {
     const resetAction = StackActions.reset({
       index: 0,
@@ -166,12 +219,18 @@ export default class index extends PureComponent {
   render() {
     const {
       businesses: { businesses },
-      loading,
+      loading: businessesLoading,
       navigation: {
         navigate,
         state: { params },
       },
     } = this.props;
+
+    const { currentLocation, error, loading: locationLoading } = this.state;
+
+    const loading = businessesLoading || locationLoading;
+
+    console.log(error);
 
     if (!loading && businesses && businesses.length <= 0) {
       return (
@@ -188,7 +247,10 @@ export default class index extends PureComponent {
       return (
         <MapView
           businesses={businesses}
-          openDetails={item => navigate('BusinessDetails', { businessDetails: item })}
+          currentLocation={currentLocation}
+          openDetails={(item, distance) =>
+            navigate('BusinessDetails', { businessDetails: item, distance })
+          }
         />
       );
     }
@@ -201,6 +263,7 @@ export default class index extends PureComponent {
           keyExtractor={this._keyExtractor}
           ListFooterComponent={this._renderFooter}
           refreshing={loading}
+          extraData={this.state}
           onEndReached={this._loadMore}
           onEndReachedThreshold={100}
           ItemSeparatorComponent={this._itemSeparator}
