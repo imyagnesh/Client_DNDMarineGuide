@@ -10,13 +10,16 @@ import {
   PermissionsAndroid,
   ToastAndroid,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RectButton } from 'react-native-gesture-handler';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
-import { formatPhoneNumber, openLink } from 'utils';
+import { formatPhoneNumber, openLink, action } from 'utils';
 import Config from 'react-native-config';
+import { connect } from 'react-redux';
+import { FETCH_ADVERTISEMENT, REQUEST, CLEAR_ADVERTISEMENT } from '../../constants/actionTypes';
 
 const { width, height } = Dimensions.get('window');
 
@@ -24,9 +27,12 @@ const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.002;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-export default class index extends PureComponent {
+class index extends PureComponent {
   static propTypes = {
     navigation: PropTypes.object.isRequired,
+    advertisement: PropTypes.object.isRequired,
+    getAdvertisement: PropTypes.func.isRequired,
+    clearAdvertisement: PropTypes.func.isRequired,
   };
 
   state = {
@@ -34,6 +40,23 @@ export default class index extends PureComponent {
     distance: null,
     error: false,
   };
+
+  constructor(props) {
+    super(props);
+    const {
+      navigation: {
+        state: { params },
+      },
+      clearAdvertisement,
+      getAdvertisement,
+    } = props;
+    const { businessDetails } = params;
+
+    clearAdvertisement();
+    if (businessDetails.advertiser === 'N') {
+      getAdvertisement(1);
+    }
+  }
 
   componentDidMount() {
     const {
@@ -210,6 +233,7 @@ export default class index extends PureComponent {
   };
 
   renderWithoutAdvertisement = businessDetails => {
+    const { advertisement } = this.props;
     return (
       <View style={{ flex: 1 }}>
         <Text
@@ -241,6 +265,16 @@ export default class index extends PureComponent {
             backgroundColor: '#4a4a4a',
           }}
         />
+        {advertisement && (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Image
+              onLoad={this.redirect}
+              source={{ uri: advertisement.ad_url }}
+              resizeMode="contain"
+              style={{ height: 250, width: 250 }}
+            />
+          </View>
+        )}
       </View>
     );
   };
@@ -269,9 +303,28 @@ export default class index extends PureComponent {
 
     const { businessDetails } = params;
 
-    // if (businessDetails.advertiser === 'N') {
-    //   return <Fragment>{this.renderWithoutAdvertisement(businessDetails)}</Fragment>;
-    // }
+    if (businessDetails.advertiser === 'N') {
+      return <Fragment>{this.renderWithoutAdvertisement(businessDetails)}</Fragment>;
+    }
     return <Fragment>{this.renderWithAdvertisement(businessDetails)}</Fragment>;
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    advertisement: state.advertisement,
+    error: !!state.error.FETCH_ADVERTISEMENT,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    getAdvertisement: search => dispatch(action(`${FETCH_ADVERTISEMENT}_${REQUEST}`, search)),
+    clearAdvertisement: () => dispatch(action(CLEAR_ADVERTISEMENT)),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(index);

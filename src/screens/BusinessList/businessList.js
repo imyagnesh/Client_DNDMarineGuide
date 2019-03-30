@@ -194,16 +194,19 @@ export default class index extends PureComponent {
     }
 
     return (
-      <FlatList
-        data={businesses}
-        renderItem={this._renderItem}
-        keyExtractor={this._keyExtractor}
-        ListFooterComponent={this._renderFooter}
-        refreshing={loading}
-        onEndReached={this._loadMore}
-        onEndReachedThreshold={100}
-        ItemSeparatorComponent={this._itemSeparator}
-      />
+      <View style={{ flex: 1 }}>
+        <FlatList
+          data={businesses}
+          renderItem={this._renderItem}
+          keyExtractor={this._keyExtractor}
+          ListFooterComponent={this._renderFooter}
+          refreshing={loading}
+          onEndReached={this._loadMore}
+          onEndReachedThreshold={100}
+          ItemSeparatorComponent={this._itemSeparator}
+        />
+        <View style={{ height: 50, flexDirection: 'row', backgroundColor: 'red' }} />
+      </View>
     );
   }
 }

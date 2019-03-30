@@ -8,6 +8,7 @@ import cities from './citiesReducer';
 import marinas from './marinasReducer';
 import categories from './categoriesReducer';
 import businesses from './businessesReducer';
+import advertisement from './advertisementReducer';
 
 const navReducer = createNavigationReducer(Navigator);
 
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   marinas,
   categories,
   businesses,
+  advertisement,
 });
 
 export default rootReducer;

@@ -2,19 +2,30 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { View, Image, PixelRatio, Animated, Text, SafeAreaView } from 'react-native';
 import Config from 'react-native-config';
-import { HEIGHT, Api, timeout } from 'utils';
+import { connect } from 'react-redux';
+import { HEIGHT, action } from 'utils';
+import { FETCH_ADVERTISEMENT, CLEAR_ADVERTISEMENT, REQUEST } from '../../constants/actionTypes';
 
-export default class index extends PureComponent {
+class index extends PureComponent {
   static propTypes = {
     navigation: PropTypes.object.isRequired,
+    getAdvertisement: PropTypes.func.isRequired,
+    advertisement: PropTypes.object.isRequired,
+    clearAdvertisement: PropTypes.func.isRequired,
+    error: PropTypes.bool.isRequired,
   };
 
   state = {
     imageAnim: new Animated.Value(0),
   };
 
+  constructor(props) {
+    super(props);
+    props.clearAdvertisement();
+    props.getAdvertisement(1);
+  }
+
   componentDidMount() {
-    this.getAdvertisement();
     const { imageAnim } = this.state;
     Animated.timing(imageAnim, {
       toValue: 1,
@@ -23,21 +34,11 @@ export default class index extends PureComponent {
     }).start();
   }
 
-  getAdvertisement = async () => {
-    try {
-      const res = await fetch(`${Config.API_URL}/getAdvertisements?addType=1`);
-      const advertisement = await res.json();
-      const { length } = advertisement;
-      if (length > 0) {
-        const i = Math.floor(Math.random() * length);
-        this.setState({ advertisement: advertisement[i] });
-      } else {
-        this.setState({ advertisement: advertisement[0] });
-      }
-    } catch (error) {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.error && this.props.error !== nextProps.error) {
       this.redirect();
     }
-  };
+  }
 
   redirect = () => {
     this.timeout = setTimeout(() => {
@@ -53,7 +54,9 @@ export default class index extends PureComponent {
   };
 
   render() {
-    const { imageAnim, advertisement } = this.state;
+    const { imageAnim } = this.state;
+
+    const { advertisement } = this.props;
 
     const translateY = imageAnim.interpolate({
       inputRange: [0, 1],
@@ -128,3 +131,22 @@ export default class index extends PureComponent {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    advertisement: state.advertisement,
+    error: !!state.error.FETCH_ADVERTISEMENT,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    getAdvertisement: search => dispatch(action(`${FETCH_ADVERTISEMENT}_${REQUEST}`, search)),
+    clearAdvertisement: () => dispatch(action(CLEAR_ADVERTISEMENT)),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(index);
