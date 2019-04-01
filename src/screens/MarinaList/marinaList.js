@@ -66,7 +66,7 @@ export default class index extends PureComponent {
     setParams({
       onNextPress: () =>
         navigate('Categories', {
-          search,
+          search: { ...search, marinas: '' },
         }),
     });
   }
@@ -82,7 +82,7 @@ export default class index extends PureComponent {
   };
 
   _onSelectData = data => {
-    if (data && data.length > 0) {
+    if (data) {
       const {
         navigation: {
           setParams,
@@ -93,10 +93,7 @@ export default class index extends PureComponent {
 
       const { search } = params;
 
-      let newSearch = search;
-      if (data.length > 0) {
-        newSearch = { ...search, cities: data.map(x => x.marina_cd).toString() };
-      }
+      const newSearch = { ...search, marinas: data.map(x => x.marina_cd).toString() };
 
       setParams({
         onNextPress: () =>

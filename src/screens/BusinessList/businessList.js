@@ -9,6 +9,7 @@ import {
   PermissionsAndroid,
   ToastAndroid,
   Platform,
+  Image,
 } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
 import { RectButton } from 'react-native-gesture-handler';
@@ -76,24 +77,62 @@ export default class index extends PureComponent {
       fetchBusinesses,
       getAdvertisement,
     } = props;
-    const { search } = params;
+    const { search, routeName } = params;
     const { page, result } = this.state;
     clearBusinesses();
     clearAdvertisement();
     fetchBusinesses({ page, result, ...search });
-    getAdvertisement(1);
+    if (routeName) {
+      if (routeName === 'Categories') {
+        this.state = { ...this.state, advertisementType: 3 };
+        getAdvertisement(3);
+      } else if (routeName === 'CategoryList') {
+        this.state = { ...this.state, advertisementType: 4 };
+        getAdvertisement(4);
+      } else if (routeName === 'CityList') {
+        this.state = { ...this.state, advertisementType: 1 };
+      }
+    }
 
     this.getLocation();
   }
 
+  componentDidMount() {
+    const { navigation, clearAdvertisement, getAdvertisement } = this.props;
+
+    this.focusSubscription = navigation.addListener('willFocus', () => {
+      clearAdvertisement();
+      const { advertisementType } = this.state;
+      if (advertisementType !== 1) {
+        getAdvertisement(advertisementType);
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    this.focusSubscription.remove();
+  }
+
   _renderItem = ({ item }) => {
+    if (item.isAdvertise) {
+      return (
+        <View style={{ height: 50, flexDirection: 'row' }}>
+          <Image
+            source={{ uri: item.ad_url }}
+            resizeMode="cover"
+            style={{ height: 50, flex: 1, width: null }}
+          />
+        </View>
+      );
+    }
     const {
       navigation: { navigate },
     } = this.props;
-    const { currentLocation } = this.state;
+    const { currentLocation, advertisementType } = this.state;
     return (
       <BusinessListItem
         item={item}
+        advertisementType={advertisementType}
         currentLocation={currentLocation}
         onPress={distance => navigate('BusinessDetails', { businessDetails: item, distance })}
       />
@@ -232,9 +271,10 @@ export default class index extends PureComponent {
         navigate,
         state: { params },
       },
+      advertisement,
     } = this.props;
 
-    const { currentLocation, error, loading: locationLoading } = this.state;
+    const { currentLocation, error, loading: locationLoading, advertisementType } = this.state;
 
     const loading = businessesLoading || locationLoading;
 
@@ -255,6 +295,7 @@ export default class index extends PureComponent {
       return (
         <MapView
           businesses={businesses}
+          advertisementType={advertisementType}
           currentLocation={currentLocation}
           openDetails={(item, distance) =>
             navigate('BusinessDetails', { businessDetails: item, distance })
@@ -263,20 +304,37 @@ export default class index extends PureComponent {
       );
     }
 
+    let businessWithAdd = businesses;
+
+    if (advertisementType === 4) {
+      businessWithAdd = [
+        ...businesses.slice(0, 2),
+        { ...advertisement, isAdvertise: true, bus_cd: 'advertisement' },
+        ...businesses.slice(2),
+      ];
+    }
+
     return (
       <View style={{ flex: 1 }}>
         <FlatList
-          data={businesses}
+          data={businessWithAdd}
           renderItem={this._renderItem}
           keyExtractor={this._keyExtractor}
           ListFooterComponent={this._renderFooter}
           refreshing={loading}
-          extraData={this.state}
           onEndReached={this._loadMore}
           onEndReachedThreshold={100}
           ItemSeparatorComponent={this._itemSeparator}
         />
-        <View style={{ height: 50, flexDirection: 'row', backgroundColor: 'red' }} />
+        {advertisement && advertisementType === 3 && (
+          <View style={{ height: 50, flexDirection: 'row' }}>
+            <Image
+              source={{ uri: advertisement.ad_url }}
+              resizeMode="cover"
+              style={{ height: 50, flex: 1, width: null }}
+            />
+          </View>
+        )}
       </View>
     );
   }

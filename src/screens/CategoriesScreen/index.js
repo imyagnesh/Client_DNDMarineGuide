@@ -7,10 +7,11 @@ import Button from '../../components/Button';
 const index = ({
   navigation: {
     navigate,
-    state: { params },
+    state: { params, routeName },
   },
 }) => {
   const { search } = params;
+
   return (
     <View style={{ flex: 1, justifyContent: 'center' }}>
       <Text
@@ -18,18 +19,18 @@ const index = ({
           textAlign: 'center',
         }}
       >
-        Search By
+        {search.service === 'Dine' ? 'Choose Rest Type' : 'Choose Category'}
       </Text>
       <Button
         value="All Categories"
         onPress={() => {
-          navigate('BusinessList', { search });
+          navigate('BusinessList', { search, routeName });
         }}
       />
       <Button
         value="Choose Specific"
         onPress={() => {
-          navigate('CategoryList', { search });
+          navigate('CategoryList', { search, routeName });
         }}
       />
     </View>

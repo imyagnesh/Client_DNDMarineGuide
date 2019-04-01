@@ -21,6 +21,7 @@ class mapView extends PureComponent {
     businesses: PropTypes.array.isRequired,
     openDetails: PropTypes.func.isRequired,
     currentLocation: PropTypes.object.isRequired,
+    advertisementType: PropTypes.number.isRequired,
   };
 
   state = {
@@ -177,7 +178,7 @@ class mapView extends PureComponent {
 
   render() {
     const { visible, business } = this.state;
-    const { openDetails, currentLocation } = this.props;
+    const { openDetails, currentLocation, advertisementType } = this.props;
     return (
       <View
         style={{
@@ -212,6 +213,7 @@ class mapView extends PureComponent {
           {business && (
             <BusinessListItem
               item={business}
+              advertisementType={advertisementType}
               currentLocation={currentLocation}
               onPress={distance => {
                 openDetails(business, distance);

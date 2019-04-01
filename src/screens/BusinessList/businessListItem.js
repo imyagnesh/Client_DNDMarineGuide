@@ -13,6 +13,7 @@ export default class businessListItem extends Component {
     item: PropTypes.object.isRequired,
     onPress: PropTypes.func.isRequired,
     currentLocation: PropTypes.object.isRequired,
+    advertisementType: PropTypes.number.isRequired,
     isMap: PropTypes.bool,
   };
 
@@ -109,9 +110,9 @@ export default class businessListItem extends Component {
   };
 
   render() {
-    const { item, onPress, isMap } = this.props;
+    const { item, onPress, isMap, advertisementType } = this.props;
     const { distance } = this.state;
-    const isAdvertiser = item.advertiser !== 'N';
+    const isAdvertiser = item.advertiser !== 'N' && advertisementType === 1;
 
     if (isMap) {
       return (
