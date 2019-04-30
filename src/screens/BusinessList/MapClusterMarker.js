@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import Svg, { Circle, Text } from 'react-native-svg';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 

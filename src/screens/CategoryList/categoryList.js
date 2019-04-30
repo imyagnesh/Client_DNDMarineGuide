@@ -63,9 +63,10 @@ export default class index extends PureComponent {
 
     const { search } = params;
     const hasCities = search.hasOwnProperty('cities');
+    const hasMarinas = search.hasOwnProperty('marinas');
     setParams({
       onNextPress: () =>
-        navigate(hasCities ? 'BusinessList' : 'Cities', {
+        navigate(hasCities || hasMarinas ? 'BusinessList' : 'Cities', {
           search: { ...search, category: '' },
           routeName,
         }),
@@ -97,10 +98,11 @@ export default class index extends PureComponent {
       const newSearch = { ...search, category: data.map(x => x.bus_cat_cd).toString() };
 
       const hasCities = search.hasOwnProperty('cities');
+      const hasMarinas = search.hasOwnProperty('marinas');
 
       setParams({
         onNextPress: () =>
-          navigate(hasCities ? 'BusinessList' : 'Cities', {
+          navigate(hasCities || hasMarinas ? 'BusinessList' : 'Cities', {
             search: newSearch,
             routeName,
           }),

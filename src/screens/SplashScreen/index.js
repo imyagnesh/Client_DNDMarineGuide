@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { View, Image, PixelRatio, Animated, Text, SafeAreaView } from 'react-native';
 import Config from 'react-native-config';
 import { connect } from 'react-redux';
+import FastImage from 'react-native-fast-image';
 import { HEIGHT, action } from 'utils';
 import { FETCH_ADVERTISEMENT, CLEAR_ADVERTISEMENT, REQUEST } from '../../constants/actionTypes';
 
@@ -115,9 +116,9 @@ class index extends PureComponent {
               >
                 Presented By
               </Text>
-              <Image
+              <FastImage
                 onLoad={this.redirect}
-                source={{ uri: advertisement.ad_url }}
+                source={{ uri: advertisement.ad_url, priority: FastImage.priority.high }}
                 resizeMode="contain"
                 style={{ height: 250, width: 250 }}
               />

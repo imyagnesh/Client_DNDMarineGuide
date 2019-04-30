@@ -28,7 +28,9 @@ const index = ({
       <Button
         value="Near By"
         onPress={() => {
-          navigate('NearBy', { search });
+          navigate(search.service === 'Dock' ? 'BusinessList' : 'Categories', {
+            search: { ...search, cities: [search.city].toString() },
+          });
         }}
       />
     </View>
