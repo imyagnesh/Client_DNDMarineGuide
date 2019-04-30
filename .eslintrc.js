@@ -33,6 +33,7 @@ module.exports = {
     'global-require': [0],
     'no-underscore-dangle': [0],
     'no-param-reassign': [0],
+    'no-prototype-builtins': [0],
     'no-plusplus': 'off',
     'prettier/prettier': ['error'],
   },

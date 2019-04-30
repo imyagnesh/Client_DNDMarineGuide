@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Animated, Text, Platform, View } from 'react-native';
+import { Animated, Platform, View } from 'react-native';
 import { BorderlessButton } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { WIDTH } from 'utils';

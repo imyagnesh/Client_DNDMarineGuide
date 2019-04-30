@@ -5,6 +5,10 @@ import Svg, { Circle, Text } from 'react-native-svg';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default class MapClusterMarker extends PureComponent {
+  static propTypes = {
+    properties: PropTypes.object.isRequired,
+  };
+
   render() {
     const { circleColour, textColour } = this.props;
 
