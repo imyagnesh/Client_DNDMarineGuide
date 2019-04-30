@@ -1,44 +1,102 @@
-import React, { memo } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text } from 'react-native';
+import { connect } from 'react-redux';
+import FastImage from 'react-native-fast-image';
+import { action } from 'utils';
 import Button from '../../components/Button';
+import { FETCH_ADVERTISEMENT, CLEAR_ADVERTISEMENT, REQUEST } from '../../constants/actionTypes';
 
-const index = ({
-  navigation: {
-    navigate,
-    state: { params },
-  },
-}) => {
-  const { search } = params;
-  return (
-    <View style={{ flex: 1, justifyContent: 'center' }}>
-      <Text
-        style={{
-          textAlign: 'center',
-        }}
-      >
-        Search By City
-      </Text>
-      <Button
-        value="All"
-        onPress={() => {
-          navigate('CityList', { search });
-        }}
-      />
-      <Button
-        value="Near By"
-        onPress={() => {
-          navigate(search.service === 'Dock' ? 'BusinessList' : 'Categories', {
-            search: { ...search, cities: [search.city].toString() },
-          });
-        }}
-      />
-    </View>
-  );
-};
+class index extends Component {
+  constructor(props) {
+    super(props);
+    props.clearAdvertisement();
+    props.getAdvertisement(1);
+  }
+
+  render() {
+    const {
+      navigation: {
+        navigate,
+        state: { params },
+      },
+      advertisement,
+    } = this.props;
+    const { search } = params;
+    return (
+      <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          {advertisement && (
+            <View>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  color: '#000',
+                  fontSize: 20,
+                  fontWeight: '500',
+                  marginVertical: 10,
+                }}
+              >
+                Presented By
+              </Text>
+              <FastImage
+                source={{ uri: advertisement.ad_url, priority: FastImage.priority.high }}
+                resizeMode="contain"
+                style={{ height: 200, width: 200 }}
+              />
+            </View>
+          )}
+        </View>
+        <View style={{ flex: 1, justifyContent: 'center' }}>
+          <Text
+            style={{
+              textAlign: 'center',
+            }}
+          >
+            Search By City
+          </Text>
+          <Button
+            value="All"
+            onPress={() => {
+              navigate('CityList', { search });
+            }}
+          />
+          <Button
+            value="Near By"
+            onPress={() => {
+              const hasCategory = search.hasOwnProperty('category');
+              navigate(search.service === 'Dock' || hasCategory ? 'BusinessList' : 'Categories', {
+                search: { ...search, cities: [search.city].toString() },
+              });
+            }}
+          />
+        </View>
+      </View>
+    );
+  }
+}
 
 index.propTypes = {
   navigation: PropTypes.object.isRequired,
+  advertisement: PropTypes.object.isRequired,
+  clearAdvertisement: PropTypes.func.isRequired,
+  getAdvertisement: PropTypes.func.isRequired,
 };
+function mapStateToProps(state) {
+  return {
+    advertisement: state.advertisement,
+    error: !!state.error.FETCH_ADVERTISEMENT,
+  };
+}
 
-export default memo(index);
+function mapDispatchToProps(dispatch) {
+  return {
+    getAdvertisement: search => dispatch(action(`${FETCH_ADVERTISEMENT}_${REQUEST}`, search)),
+    clearAdvertisement: () => dispatch(action(CLEAR_ADVERTISEMENT)),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(index);

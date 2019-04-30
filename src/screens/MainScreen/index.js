@@ -12,11 +12,18 @@ import Geolocation from 'react-native-geolocation-service';
 import { connect } from 'react-redux';
 import FastImage from 'react-native-fast-image';
 import Config from 'react-native-config';
+import { action } from 'utils';
+import { FETCH_ADVERTISEMENT, CLEAR_ADVERTISEMENT, REQUEST } from '../../constants/actionTypes';
 
 import Button from '../../components/Button';
 
 class index extends Component {
-  static propTypes = {};
+  static propTypes = {
+    clearAdvertisement: PropTypes.func.isRequired,
+    getAdvertisement: PropTypes.func.isRequired,
+    navigation: PropTypes.object.isRequired,
+    advertisement: PropTypes.object.isRequired,
+  };
 
   state = {
     loading: false,
@@ -24,7 +31,10 @@ class index extends Component {
     error: false,
   };
 
-  componentDidMount() {
+  constructor(props) {
+    super(props);
+    props.clearAdvertisement();
+    props.getAdvertisement(1);
     this.getLocation();
   }
 
@@ -140,6 +150,7 @@ class index extends Component {
           <View style={{ flex: 1, justifyContent: 'center' }}>
             <Button
               value="Dock"
+              caption="(Search For Marine Servcies)"
               onPress={() => {
                 navigate('Dock', {
                   search: {
@@ -151,6 +162,7 @@ class index extends Component {
             />
             <Button
               value="Dine"
+              caption="(Search for food and restaurants)"
               onPress={() => {
                 navigate('Dine', {
                   search: {
@@ -161,7 +173,7 @@ class index extends Component {
               }}
             />
             <Button
-              value="Services"
+              value="Other Local Services"
               onPress={() => {
                 navigate('Categories', {
                   search: {},
@@ -181,10 +193,6 @@ class index extends Component {
   }
 }
 
-index.propTypes = {
-  navigation: PropTypes.object.isRequired,
-  advertisement: PropTypes.object.isRequired,
-};
 function mapStateToProps(state) {
   return {
     advertisement: state.advertisement,
@@ -192,11 +200,14 @@ function mapStateToProps(state) {
   };
 }
 
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     getAdvertisement: search => dispatch(action(`${FETCH_ADVERTISEMENT}_${REQUEST}`, search)),
-//     clearAdvertisement: () => dispatch(action(CLEAR_ADVERTISEMENT)),
-//   };
-// }
+function mapDispatchToProps(dispatch) {
+  return {
+    getAdvertisement: search => dispatch(action(`${FETCH_ADVERTISEMENT}_${REQUEST}`, search)),
+    clearAdvertisement: () => dispatch(action(CLEAR_ADVERTISEMENT)),
+  };
+}
 
-export default connect(mapStateToProps)(index);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(index);
