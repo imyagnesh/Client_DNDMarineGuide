@@ -150,7 +150,7 @@ class index extends Component {
           <View style={{ flex: 1, justifyContent: 'center' }}>
             <Button
               value="Dock"
-              caption="(Search For Marine Servcies)"
+              caption="Search For Marine Services"
               onPress={() => {
                 navigate('Dock', {
                   search: {
@@ -162,7 +162,7 @@ class index extends Component {
             />
             <Button
               value="Dine"
-              caption="(Search for food and restaurants)"
+              caption="Search for food and restaurants"
               onPress={() => {
                 navigate('Dine', {
                   search: {

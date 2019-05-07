@@ -9,13 +9,16 @@ import {
   PermissionsAndroid,
   ToastAndroid,
   Platform,
+  ImageBackground,
   Image,
 } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
 import { RectButton } from 'react-native-gesture-handler';
-import { os } from 'utils';
+import { image, company } from 'faker';
+import { os, range } from 'utils';
 
 import Geolocation from 'react-native-geolocation-service';
+import Carousel from '../../components/Carousel';
 import MapView from './mapView';
 import Error from '../../components/Error';
 import BusinessListItem from './businessListItem';
@@ -316,6 +319,24 @@ export default class index extends PureComponent {
 
     return (
       <View style={{ flex: 1 }}>
+        <View style={{ height: 160 }}>
+          <Carousel snapToInterval={120 + 4} horizontalInset={4}>
+            <React.Fragment>
+              {range(10).map(i => (
+                <ImageBackground
+                  resizeMode="cover"
+                  key={i}
+                  source={{ uri: image.nightlife() }}
+                  style={{ flex: 1, height: 160, width: 120, margin: 2 }}
+                >
+                  <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+                    <Text style={{ color: '#fff', padding: 8 }}>{company.companyName()}</Text>
+                  </View>
+                </ImageBackground>
+              ))}
+            </React.Fragment>
+          </Carousel>
+        </View>
         <FlatList
           data={businessWithAdd}
           renderItem={this._renderItem}
@@ -327,7 +348,7 @@ export default class index extends PureComponent {
           ItemSeparatorComponent={this._itemSeparator}
         />
         {advertisement && advertisementType === 3 && (
-          <View style={{ height: 50, flexDirection: 'row' }}>
+          <View style={{ height: 50, flexDirection: 'row', alignSelf: 'flex-end' }}>
             <Image
               source={{ uri: advertisement.ad_url }}
               resizeMode="cover"

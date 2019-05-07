@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Text } from 'react-native';
+import { Text, View, Image, Modal, StyleSheet, TouchableOpacity } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import { StackActions, NavigationActions } from 'react-navigation';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { formatPhoneNumber, openLink } from 'utils';
 import MultiSelect from '../../components/MultiSelect';
 
 export default class index extends PureComponent {
@@ -11,6 +13,9 @@ export default class index extends PureComponent {
     marinas: PropTypes.array.isRequired,
     navigation: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
+    advertisement: PropTypes.object.isRequired,
+    getAdvertisement: PropTypes.func.isRequired,
+    clearAdvertisement: PropTypes.func.isRequired,
   };
 
   static navigationOptions = ({
@@ -38,6 +43,8 @@ export default class index extends PureComponent {
 
   state = {
     marinas: [],
+    showModal: false,
+    selectedItem: null,
   };
 
   constructor(props) {
@@ -58,7 +65,10 @@ export default class index extends PureComponent {
         setParams,
         navigate,
         state: { params },
+        addListener,
       },
+      clearAdvertisement,
+      getAdvertisement,
     } = this.props;
 
     const { search } = params;
@@ -68,6 +78,10 @@ export default class index extends PureComponent {
         navigate('Categories', {
           search: { ...search, marinas: '' },
         }),
+    });
+    this.focusSubscription = addListener('willFocus', () => {
+      clearAdvertisement();
+      getAdvertisement(3);
     });
   }
 
@@ -79,6 +93,10 @@ export default class index extends PureComponent {
 
   _renderItem = item => {
     return <Text style={{ paddingHorizontal: 10 }}>{item.mar_name}</Text>;
+  };
+
+  onInfoPress = item => {
+    this.setState({ selectedItem: item, showModal: true });
   };
 
   _onSelectData = data => {
@@ -105,24 +123,145 @@ export default class index extends PureComponent {
   };
 
   render() {
-    const { marinas } = this.state;
-    const { loading } = this.props;
+    const { marinas, showModal, selectedItem } = this.state;
+    const { loading, advertisement } = this.props;
     return (
-      <MultiSelect
-        data={marinas}
-        renderItem={this._renderItem}
-        onSelectData={this._onSelectData}
-        uniqueKey="marina_cd"
-        searchKey="mar_name"
-        loading={loading}
-        onSearchAgain={() => {
-          const resetAction = StackActions.reset({
-            index: 0,
-            actions: [NavigationActions.navigate({ routeName: 'Main' })],
-          });
-          this.props.navigation.dispatch(resetAction);
-        }}
-      />
+      <View style={{ flex: 1 }}>
+        {selectedItem && (
+          <Modal visible={showModal} transparent animationType="slide">
+            <View
+              style={{
+                ...StyleSheet.absoluteFill,
+                backgroundColor: 'rgba(0,0,0, 0.4)',
+                justifyContent: 'center',
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: '#fff',
+                  marginHorizontal: 30,
+                  borderRadius: 10,
+                }}
+              >
+                <TouchableOpacity
+                  style={{ flexDirection: 'row' }}
+                  onPress={() => openLink(`tel:${selectedItem.mar_phone}`)}
+                >
+                  <View
+                    style={{ flex: 1, flexDirection: 'row', padding: 10, alignItems: 'center' }}
+                  >
+                    <Icon name="phone" size={24} color="#000" />
+                    <Text style={{ flexDirection: 'row', flexWrap: 'wrap', padding: 10 }}>
+                      {`${selectedItem.mar_add || ''}
+${selectedItem.mar_city || ''} ${selectedItem.mar_st || ''} ${selectedItem.mar_zip ||
+                        ''} ${selectedItem.mar_co || ''}`}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+
+                {!!selectedItem.mar_phone && (
+                  <TouchableOpacity
+                    style={{ flexDirection: 'row' }}
+                    onPress={() => openLink(`tel:${selectedItem.mar_phone}`)}
+                  >
+                    <View
+                      style={{ flex: 1, flexDirection: 'row', padding: 10, alignItems: 'center' }}
+                    >
+                      <Icon name="phone" size={24} color="#000" />
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          fontWeight: '400',
+                          lineHeight: 24,
+                          paddingHorizontal: 10,
+                        }}
+                        numberOfLines={1}
+                        allowFontScaling={false}
+                      >
+                        {formatPhoneNumber(selectedItem.mar_phone)}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
+                {!!selectedItem.mar_website && (
+                  <TouchableOpacity
+                    style={{ flexDirection: 'row' }}
+                    onPress={() => openLink(selectedItem.mar_website)}
+                  >
+                    <View
+                      style={{ flex: 1, flexDirection: 'row', padding: 10, alignItems: 'center' }}
+                    >
+                      <Icon name="explore" size={24} color="#000" />
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          fontWeight: '400',
+                          lineHeight: 24,
+                          paddingHorizontal: 10,
+                        }}
+                        numberOfLines={1}
+                        allowFontScaling={false}
+                      >
+                        {selectedItem.mar_website}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
+                <TouchableOpacity
+                  style={{
+                    width: 100,
+                    height: 40,
+                    margin: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    alignSelf: 'center',
+                  }}
+                  onPress={() => {
+                    this.setState({ selectedItem: null, showModal: false });
+                  }}
+                >
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      fontSize: 18,
+                      fontWeight: 'bold',
+                      color: '#5DAFDE',
+                    }}
+                  >
+                    Done
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+        )}
+        <MultiSelect
+          data={marinas}
+          renderItem={this._renderItem}
+          onSelectData={this._onSelectData}
+          uniqueKey="marina_cd"
+          searchKey="mar_name"
+          loading={loading}
+          onSearchAgain={() => {
+            const resetAction = StackActions.reset({
+              index: 0,
+              actions: [NavigationActions.navigate({ routeName: 'Main' })],
+            });
+            this.props.navigation.dispatch(resetAction);
+          }}
+          onInfoPress={this.onInfoPress}
+          info
+        />
+        {advertisement && (
+          <View style={{ height: 50, flexDirection: 'row' }}>
+            <Image
+              source={{ uri: advertisement.ad_url }}
+              resizeMode="cover"
+              style={{ height: 50, flex: 1, width: null }}
+            />
+          </View>
+        )}
+      </View>
     );
   }
 }

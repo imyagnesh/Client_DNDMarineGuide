@@ -7,6 +7,8 @@ export const { width: WIDTH, height: HEIGHT } = Dimensions.get('window');
 
 export const edition = 'PNW';
 
+export const range = N => Array.from({ length: N }, (v, k) => k + 1);
+
 const timeout = m =>
   new Promise((_, reject) => setTimeout(() => reject(new Error('Timed Out')), m));
 
