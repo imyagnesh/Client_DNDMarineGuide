@@ -150,7 +150,7 @@ export default class index extends PureComponent {
                   <View
                     style={{ flex: 1, flexDirection: 'row', padding: 10, alignItems: 'center' }}
                   >
-                    <Icon name="phone" size={24} color="#000" />
+                    <Icon name="place" size={24} color="#000" />
                     <Text style={{ flexDirection: 'row', flexWrap: 'wrap', padding: 10 }}>
                       {`${selectedItem.mar_add || ''}
 ${selectedItem.mar_city || ''} ${selectedItem.mar_st || ''} ${selectedItem.mar_zip ||

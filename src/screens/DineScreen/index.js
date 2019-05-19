@@ -8,10 +8,20 @@ import { FETCH_ADVERTISEMENT, CLEAR_ADVERTISEMENT, REQUEST } from '../../constan
 import Button from '../../components/Button';
 
 class index extends Component {
-  constructor(props) {
-    super(props);
-    props.clearAdvertisement();
-    props.getAdvertisement(1);
+  componentDidMount() {
+    const {
+      navigation: { addListener },
+      clearAdvertisement,
+      getAdvertisement,
+    } = this.props;
+    this.focusSubscription = addListener('willFocus', () => {
+      clearAdvertisement();
+      getAdvertisement(1);
+    });
+  }
+
+  componentWillUnmount() {
+    this.focusSubscription.remove();
   }
 
   render() {

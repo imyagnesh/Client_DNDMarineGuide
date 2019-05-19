@@ -33,9 +33,23 @@ class index extends Component {
 
   constructor(props) {
     super(props);
-    props.clearAdvertisement();
-    props.getAdvertisement(1);
     this.getLocation();
+  }
+
+  componentDidMount() {
+    const {
+      navigation: { addListener },
+      clearAdvertisement,
+      getAdvertisement,
+    } = this.props;
+    this.focusSubscription = addListener('willFocus', () => {
+      clearAdvertisement();
+      getAdvertisement(1);
+    });
+  }
+
+  componentWillUnmount() {
+    this.focusSubscription.remove();
   }
 
   hasLocationPermission = async () => {
